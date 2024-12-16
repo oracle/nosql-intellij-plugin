@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>oracle.nosql</groupId>
+	<artifactId>oracle.nosql.model</artifactId>
+	<version>1.2.0</version>
+	<packaging>pom</packaging>
+	<name>Oracle NoSQL datamodel parent</name>
+	<url>oracle.nosql.model/</url>
+	<description>a pom-only project.
+	Builds database layer for a specific profile.
+	Two profiles are configured: cloud and kv.
+	</description>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<!-- these custom properties can be specified via command-line -->
+		<remote.user>${user.name}</remote.user>
+		<p2.site.host>HOST_PATH</p2.site.host>
+		<p2.site.port>8000</p2.site.port>
+		<p2.site.root>home/${remote.user}/www</p2.site.root>
+		<p2.site.path>eclipse</p2.site.path>
+	</properties>
+
+	<!-- common dependencies used by modules -->
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.7.0</version>
+					<configuration>
+						<rules>
+							<requireJavaVersion>
+								<version>1.8</version>
+							</requireJavaVersion>
+						</rules>
+						<source>1.8</source>
+						<target>1.8</target>
+						<!-- oddly, this flag activates incremental compilation -->
+						<useIncrementalCompilation>false</useIncrementalCompilation>
+					</configuration>
+				</plugin>
+
+				<!-- the target jar is copied to oracle.nosql.eclipse.plugin/ -->
+				<!-- src/main/resources/lib directory. this target jar is statically -->
+				<!-- linked to oracle.nosql.eclipse.plugin via its MANTFEST.MF -->
+
+<!--				<plugin>-->
+<!--					<groupId>org.apache.maven.plugins</groupId>-->
+<!--					<artifactId>maven-dependency-plugin</artifactId>-->
+<!--					<version>2.10</version>-->
+<!--					<executions>-->
+<!--						<execution>-->
+<!--							<id>copy-to-eclipse-plugin-module-lib</id>-->
+<!--							<phase>verify</phase>-->
+<!--							<goals>-->
+<!--								<goal>copy</goal>-->
+<!--							</goals>-->
+<!--							<configuration>-->
+<!--								<artifactItems>-->
+<!--									<artifactItem>-->
+<!--										<groupId>${project.groupId}</groupId>-->
+<!--										<artifactId>${project.artifactId}</artifactId>-->
+<!--										<version>${project.version}</version>-->
+<!--										<type>jar</type>-->
+<!--										<overWrite>true</overWrite>-->
+<!--										&lt;!&ndash; project.baseDir == oracle.nosql.model/oracle.nosql.model.* &ndash;&gt;-->
+<!--										<outputDirectory>${project.basedir}/../../oracle.nosql.eclipse.plugin/src/main/resources/lib/</outputDirectory>-->
+<!--									</artifactItem>-->
+<!--								</artifactItems>-->
+<!--							</configuration>-->
+<!--						</execution>-->
+<!--					</executions>-->
+<!--				</plugin>-->
+			</plugins>
+		</pluginManagement>
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<version>3.7</version>
+				<configuration>
+					<generateReports>false</generateReports>
+				</configuration>
+			</plugin>
+
+			<!-- To generate standalone javadocs for the project, add the Javadoc 
+				Plugin -->
+			<!-- in the build section of pom -->
+			<plugin>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>3.0.0</version>
+				<configuration>
+					<aggrgate>true</aggrgate>
+					<doclet>org.umlgraph.doclet.UmlGraphDoc</doclet>
+					<docletPath>PATH_TO_UMLGRAPH</docletPath>
+					<author>false</author>
+					<quiet>false</quiet>
+					<failOnError>false</failOnError>
+					<tags>
+						<tag>
+							<name>opt</name>
+							<placement>X</placement>
+						</tag>
+						<tag>
+							<name>hidden</name>
+							<placement>X</placement>
+						</tag>
+					</tags>
+
+					<additionalparam>
+						-Xdoclint:none -views -all -inferrel -inferdep
+						-quiet
+						-collpackages java.util.* -qualify
+						-postfixpackage
+						-nodefontsize 9 -nodefontpackagesize 7
+					</additionalparam>
+					<useStandardDocletOptions>true</useStandardDocletOptions>
+				</configuration>
+			</plugin>
+
+		</plugins>
+		<extensions>
+			<!-- Enabling the use of SSH -->
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-ssh</artifactId>
+				<version>3.0.0</version>
+			</extension>
+		</extensions>
+	</build>
+
+
+
+	<distributionManagement>
+		<site>
+			<id>plugin project website</id>
+			<url>scp://${remote.user}@${p2.site.host}:/${p2.site.root}/${p2.site.path}</url>
+		</site>
+	</distributionManagement>
+
+
+	<!-- two profiles: cloud and kv. both use common module -->
+	<profiles>
+		<profile>
+			<id>cloud</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<modules>
+				<module>oracle.nosql.model.common</module>
+				<module>oracle.nosql.model.cloud</module>
+			</modules>
+		</profile>
+
+		<profile>
+			<id>kv</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+
+			<modules>
+				<module>oracle.nosql.model.common</module>
+				<module>oracle.nosql.model.kv</module>
+			</modules>
+		</profile>
+	</profiles>
+
+
+	<organization>
+		<name>Oracle Corp.</name>
+	</organization>
+</project>

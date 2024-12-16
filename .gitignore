@@ -1,0 +1,26 @@
+/target$
+/*.prefs
+.DS_Store
+/.DS_Store
+/*.class
+/wip$
+.idea/
+target/
+*.iml
+/bin/
+/doc/
+/*.ucls
+/*.orig
+syntax: glob
+oracle.nosql/oracle.nosql.model/oracle.nosql.model.cloud/lib/guava.jar
+oracle.nosql/oracle.nosql.model/oracle.nosql.model.cloud/lib/jackson-core.jar
+oracle.nosql/oracle.nosql.model/oracle.nosql.model.cloud/lib/jackson-databind-2.9.7.jar
+oracle.nosql/oracle.nosql.model/oracle.nosql.model.cloud/lib/netty-all.jar
+oracle.nosql/oracle.nosql.model/oracle.nosql.model.cloud/lib/nosqldriver.jar
+Client.jar
+oracle.nosql/oracle.nosql.intellij.plugin/.gradle/
+oracle.nosql/oracle.nosql.intellij.plugin/.idea/
+oracle.nosql/oracle.nosql.intellij.plugin/build/
+oracle.nosql/oracle.nosql.intellij.plugin/out/
+# Default ignored files
+oracle.nosql/oracle.nosql.model/.idea/workspace.xml

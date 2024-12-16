@@ -1,0 +1,47 @@
+<html>
+<body>
+	provides abstraction common to different flavors of database.
+	<p>
+		A <a href="IConnectionProfile.html">connection profile</a> holds
+		meta-data about a <a href="IConnection.html">connection</a>. A
+		connection <em>conceptually</em> operates on underlying database.
+	</p>
+
+	<p>Connection interface does not describe any imperative function.
+		Because imperative functions vary by underlying database (for
+		example,. database in cloud versus on-premise). Hence, any grand
+		generalization of database functions is avoided.</p>
+
+	<p>
+		A concrete implementation is provided for <a
+			href="./cloud/connection/ColudsimConnection.html">CloudLite</a> and
+		can be used as a reference.
+	</p>
+
+
+	<p>Typical usage is:
+	<pre>
+    import oracle.nosql.model.connection.*;
+    import oracle.nosql.model.cloud.connection.*;
+    
+	IConnectionProfile profile = new CloudsimConnctionProfile();
+	profile.setUrl("http://localhost:8080/")  // properties depend on  
+	       .setTenantId("TestTenant");        // specific profile
+	
+	IConnction c = profile.getConnection();
+	
+	CloudsimConnection cloudsimConnection = 
+		c.unwrap(CloudsimConnection.class);
+</pre>
+
+	<p>
+		A <a href="CloudsimConnection.html">CloudsimConnection</a> is a thin
+		wrapper over
+		<code>oracle.nosql.driver.NoSQLHandle</code>
+		.
+
+	</p>
+
+</body>
+
+</html>

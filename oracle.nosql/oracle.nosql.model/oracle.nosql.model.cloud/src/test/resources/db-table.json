@@ -1,0 +1,37 @@
+[
+	{
+		"json_version": 1,
+		"type": "table",
+		"name": "test",
+		"namespace": "TestTenant",
+		"shardKey": [
+			"pk"
+		],
+		"primaryKey": [
+			"pk"
+		],
+		"limits": [
+			{
+				"readLimit": 1000,
+				"writeLimit": 1000,
+				"sizeLimit": 1,
+				"indexLimit": 1000,
+				"childTableLimit": 1000
+			}
+		],
+		"fields": [
+			{
+				"name": "pk",
+				"type": "STRING",
+				"nullable": false,
+				"default": null
+			},
+			{
+				"name": "a",
+				"type": "INTEGER",
+				"nullable": true,
+				"default": null
+			}
+		]
+	}
+]

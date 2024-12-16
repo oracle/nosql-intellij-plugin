@@ -1,0 +1,32 @@
+<html>
+<body>
+	<p>A Data model is a tree of elements organized in a hierarchy of
+		schema --&gt; tables --&gt; fields.</p>
+
+	<p>
+		A schema is a collection of named <a href="Table.html">tables</a>.
+		Each table is a ordered collection of named fields. Each field belongs
+		to a database type and has other properties.
+	</p>
+
+	<p>
+		The schema is modeled as a tree of <a href="SchemaElement.html">SchemaElelemnt</a>
+		where each element is named and contained in another element.
+	</p>
+
+	<p>
+		Creating a schema with its element is defined by <a
+			href="SchemaBuilder.html">SchemaBuilder</a> interface.
+	</p>
+
+	<p>
+		A schema can be created either in memory or from information from
+		database. The concrete derivation of <a href="SchemaBuilder.html">SchemaBuilder</a>
+		may access specific underlying database to build a schema.
+	</p>
+
+	<p>A in-memory schema builder is available in this package that
+		builds a schema from JSON descriptor.</p>
+
+</body>
+</html>

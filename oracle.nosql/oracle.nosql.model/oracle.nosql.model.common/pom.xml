@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>oracle.nosql</groupId>
+		<artifactId>oracle.nosql.model</artifactId>
+		<version>1.2.0</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+	<artifactId>oracle.nosql.model.common</artifactId>
+	<packaging>jar</packaging>
+	<url>oracle.nosql.model.common/</url>
+	<version>1.2.0</version>
+	<description>interface to  datamodel and connection</description>
+
+	<properties>
+		<httpdriver.version>1.0.0</httpdriver.version>
+	</properties>
+
+	<dependencies>
+		<!-- links to a local jar file -->
+		<dependency>
+			<groupId>oracle.nosql</groupId>
+			<artifactId>httpdriver</artifactId>
+			<version>${httpdriver.version}</version>
+			<scope>system</scope>
+			<!-- this path MUST be adjusted for local environemnt -->
+			<systemPath>/Users/yashaga/downloads/oracle-nosql-java-sdk-2/lib/nosqldriver.jar
+			</systemPath>
+			<!-- <systemPath>DOWNLOAD_PATH/oracle-nosql-cloud-java-driver-YY.DAY/lib/nosqldriver.jar</systemPath> -->
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.10</version>
+			</plugin>
+		</plugins>
+	</build>
+</project>

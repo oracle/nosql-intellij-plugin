@@ -1,0 +1,68 @@
+/*
+* Copyright (C) 2019, 2024 Oracle and/or its affiliates.
+*
+* Licensed under the Universal Permissive License v 1.0 as shown at
+* https://oss.oracle.com/licenses/upl/
+*/
+
+plugins {
+    id("java")
+    id("org.jetbrains.intellij") version "1.17.3"
+}
+
+group = "oracle.nosql"
+version = pluginVersion
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+
+repositories {
+    mavenLocal()
+    maven {
+        url 'https://artifacthub-iad.oci.oraclecorp.com/nosql-release-maven-local/'
+    }
+    mavenCentral()
+}
+
+configurations.all {
+    transitive = false
+}
+
+dependencies {
+    //testCompile group: 'junit', name: 'junit', version: '4.12'
+    implementation('oracle.nosql:oracle.nosql.model.common:1.2.0')
+    implementation('oracle.nosql:oracle.nosql.model.cloud:1.2.0')
+    implementation('com.oracle.nosql.sdk:nosqldriver:5.4.16')
+    implementation('com.fifesoft:rsyntaxtextarea:3.5.1')
+    implementation('org.json:json:20240303')
+    implementation('com.google.code.gson:gson:2.10.1')
+}
+
+
+intellij {
+    pluginName.set(jarName)
+    version.set(ideVersion)
+    plugins.set(['java'])
+    updateSinceUntilBuild.set(false)
+}
+patchPluginXml {
+    version.set(pluginVersion)
+    sinceBuild.set('242.23726.103')
+    changeNotes = """
+            <p><b>The following features has been added in the release 1.5.3 : </b></p>
+            <ul>
+                <li>
+                    <p>Support for Json Collection Tables</p>
+                </li>
+                <li>
+                    <p>Support for MR Counters</p>
+                </li>
+                <li>
+                    <p>Added view Index Ddl feature</p>
+                </li>
+            <ul>
+        """
+}

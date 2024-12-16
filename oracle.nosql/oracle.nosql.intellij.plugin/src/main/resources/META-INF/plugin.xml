@@ -1,0 +1,195 @@
+<!--
+  ~
+  ~ Copyright (C) 2019, 2024 Oracle and/or its affiliates.
+  ~
+  ~ Licensed under the Universal Permissive License v 1.0 as shown at
+  ~ https://oss.oracle.com/licenses/upl/
+  ~
+  -->
+
+<idea-plugin>
+    <id>oracle.nosql.intellij.plugin</id>
+    <name>Oracle NoSQL database connector</name>
+    <vendor email="oraclenosql-info_ww@oracle.com" url="https://docs.oracle.com/en/cloud/paas/nosql-cloud/index.html">
+        ORACLE NoSQL Database Cloud Service
+    </vendor>
+
+    <description>
+        <![CDATA[
+            <p>Use Oracle NoSQL database connector to browse tables and run queries against the Oracle NoSQL Database Cloud Service, Oracle NoSQL Database on-premises or to the Oracle NoSQL Cloud Simulator.</p>
+            <br/>
+            <p>Please check <a href=https://docs.oracle.com/pls/topic/lookup?ctx=nosql-cloud&id=intellij_plugin>IntelliJ chapter</a> for cloud setup and usage.</p>
+            <br/>
+            <p>Please check <a href=https://docs.oracle.com/pls/topic/lookup?ctx=nosql-cloud&id=about_intellij_onprem>Nosql Database Administrator's Guide</a> for on-premises setup and usage.</p>
+            <br/>
+            <p><h2><b>Features:</b></h2></p>
+            <ul>
+                <li>
+                    <p>Connect to Oracle NoSQL Database Cloud Service, Oracle NoSQL Database or to the Oracle NoSQL Cloud Simulator and view all the tables.</p>
+                </li>
+                <li>
+                    <p>Get information on columns, indexes, primary key and shard key for a table.</p>
+                </li>
+                <li>
+                    <p>Execute SQL queries on a table and get results in tabular format.</p>
+                </li>
+                <li>
+                    <p>View column data in well formatted JSON structure.</p>
+                </li>
+                <li>
+                    <p>Project wizard - Quickly get started with Oracle NoSQL Database Cloud Service or Oracle NoSQL Database with examples.</p>
+                </li>
+                <li>
+                    <p>Create and Drop tables</p>
+                </li>
+                <li>
+                    <p>Add and Drop columns</p>
+                </li>
+                <li>
+                    <p>Create and Drop indexes</p>
+                </li>
+                <li>
+                    <p>Insert, Update and Delete rows in the tables</p>
+                </li>
+                <li>
+                    <p>View Query Execution Plan for a particular query</p>
+                </li>
+                <li>
+                    <p>Download query results into a JSON file</p>
+                </li>
+                <li>
+                    <p>View a table's DDL statement</p>
+                </li>
+                <li>
+                    <p>Work with complex data types such as Arrays, Maps and Records</p>
+                </li>
+                <li>
+                    <p>Work with binary and fixed binary data types</p>
+                </li>
+                <li>
+                    <p>View and use the previously executed SQL queries with command history</p>
+                </li>
+                <li>
+                    <p>Create child tables</p>
+                </li>
+                <li>
+                    <p>Full schema renderer for the Map, Array, Record, Binary, Fixed Binary and Index in the NoSQL tool window tree</p>
+                </li>
+                <li>
+                    <p>Add cloud connection using configuration file</p>
+                </li>
+                <li>
+                    <p>Multiple connections support for Cloud, On-prem and Cloudsim</p>
+                </li>
+                <li>
+                    <p>Global Active Tables support for Cloud</p>
+                </li>
+                <li>
+                    <p>Multi-region table support for On-prem</p>
+                </li>
+                <li>
+                    <p>Execute System Requests for the On-prem connections</p>
+                </li>
+                <li>
+                    <p>Edit reserved capacity of the cloud tables</p>
+                </li>
+                <li>
+                    <p>Namespace support for On-prem connections</p>
+                </li>
+                <li>
+                    <p>Column and SQL auto-completion in query workbench</p>
+                </li>
+                <li>
+                    <p>Syntax highlighted SQL to reduce errors</p>
+                </li>
+                <li>
+                    <p>Prettify SQL with a single-click</p>
+                </li>
+                <li>
+                    <p>Better JSON result navigation</p>
+                </li>
+                <li>
+                    <p>Calculate JE cache size, storage size and number of shards based on table's metedata</p>
+                </li>
+            <ul>
+        ]]>
+    </description>
+    <change-notes>Initial release of the plugin. Supports connecting to Oracle NoSQL Database cloud service
+        and data retrieve.
+    </change-notes>
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+         on how to target different products -->
+    <!-- uncomment to enable plugin in all products
+    <depends>com.intellij.modules.lang</depends>
+    -->
+    <!--see https://blog.jetbrains.com/platform/2019/06/java-functionality-extracted-as-a-plugin -->
+    <depends>com.intellij.modules.java</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!--projectConfigurable is for settings menu -->
+        <projectConfigurable groupId="tools" displayName="Oracle NoSQL" id="settings.OracleNoSQL"
+                             instance="oracle.nosql.intellij.plugin.settings.MainSettings">
+            <configurable id="settings.OracleNoSQL.general" displayName="General"
+                          instance="oracle.nosql.intellij.plugin.settings.GeneralSettings"/>
+            <configurable id="settings.OracleNoSQL.allConnections" displayName="Connections"
+                          instance="oracle.nosql.intellij.plugin.settings.AllConnectionsSetting"/>
+        </projectConfigurable>
+
+        <!--ToolWindow entry point -->
+        <toolWindow id="Schema  Explorer" secondary="true" icon="/icons/oracle.svg"
+                    anchor="right" factoryClass="oracle.nosql.intellij.plugin.toolWindow.NoSQLToolWindowFactory"/>
+
+        <projectService serviceImplementation="oracle.nosql.intellij.plugin.common.ConnectionDataProviderService"/>
+        <projectService serviceImplementation="oracle.nosql.intellij.plugin.common.MultipleConnectionsDataProviderService"/>
+        <projectService serviceImplementation="oracle.nosql.intellij.plugin.common.DatabaseBrowserManager"/>
+        <projectService serviceImplementation="oracle.nosql.intellij.plugin.common.DBProject"/>
+
+        <!--fileEditorProvider is for creating a  query window form in editor -->
+        <fileEditorProvider implementation="oracle.nosql.intellij.plugin.recordView.TableFileEditorProvider"/>
+
+        <!--provides icon for record view files -->
+        <fileIconProvider order="first" implementation="oracle.nosql.intellij.plugin.recordView.DBFileIconProvider"/>
+
+        <!--New project wizard -->
+        <moduleType id="ORACLE_NOSQL_PROJECT_MODULE"
+                    implementationClass="oracle.nosql.intellij.plugin.projectWizard.NoSqlModuleType"/>
+        <!--projectTemplate projectType="ORACLE_NOSQL_PROJECT_MODULE" templatePath="/projectTemplates/noSQLexample.zip"
+        category="false"/-->
+        <webHelpProvider implementation="oracle.nosql.intellij.plugin.common.MyHelpProvider" id="MyHelpTopic"/>
+    </extensions>
+    <project-components>
+        <component>
+            <implementation-class>oracle.nosql.intellij.plugin.common.DBProject</implementation-class>
+        </component>
+        <component>
+            <implementation-class>oracle.nosql.intellij.plugin.common.DatabaseBrowserManager</implementation-class>
+        </component>
+        <component>
+            <implementation-class>oracle.nosql.intellij.plugin.common.ConfigParser</implementation-class>
+        </component>
+    </project-components>
+
+    <actions>
+        <!--actions in tool window -->
+        <group id="oracle.nosql.ActionGroup.Browser.Controls" text="Browser Object Properties">
+            <action id="oracle.nosql.ActionGroup.Browser.Controls.refresh" icon="AllIcons.Actions.Refresh"
+                    class="oracle.nosql.intellij.plugin.toolWindow.RefreshAction" text="Refresh" description="Refresh"/>
+            <action id="oracle.nosql.ActionGroup.Browser.Controls.OpenSettings" icon="AllIcons.General.Settings"
+                    class="oracle.nosql.intellij.plugin.toolWindow.OpenSettingsAction" text="Settings"
+                    description="Settings"/>
+            <action id="oracle.nosql.ActionGroup.Browser.Controls.OpenDdl" icon="AllIcons.Actions.Execute"
+                    class="oracle.nosql.intellij.plugin.toolWindow.OpenDdlAction"
+                    text="Execute DDL commands" description="DDL commands"/>
+            <action id="oracle.nosql.ActionGroup.Browser.Controls.ConnectionChange"
+                    icon="AllIcons.General.Web"
+                    class="oracle.nosql.intellij.plugin.toolWindow.ConnectionChangeAction"
+                    text="Connections" description="Change connection">
+            </action>
+            <action id="oracle.nosql.ActionGroup.Browser.Controls.Sizing"
+                    icon="AllIcons.Debugger.Db_db_object"
+                    class="oracle.nosql.intellij.plugin.toolWindow.SizingToolAction"
+                    text="Calculate JE Cache Size" description="JE Cache Sizing tool">
+            </action>
+        </group>
+    </actions>
+</idea-plugin>
