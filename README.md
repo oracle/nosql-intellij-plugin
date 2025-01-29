@@ -281,13 +281,6 @@ Once you connect to your database -
 3. Click **View Index DDL**.
 4. Index creation DDL will be displayed in another window which also has a option to copy the DDL.
 
-## Building the repository
-
-- For Intellij Update the 'DOWNLOAD_PATH/oracle-nosql-java-sdk/lib/nosqldriver.jar' with the path to downloaded library in 'oracle.nosql/oracle.nosql.intellij.plugin/gradle.properties' file
-
-- Run the build.sh script with "-platform intellij"
-
-- The above build will generate the plugin zip in 'oracle.nosql/oracle.nosql.intellij.plugin/build/distributions/'
 
 ### Contributing
 
