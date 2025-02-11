@@ -1,6 +1,6 @@
 # Oracle NoSQL Database IntelliJ Plugin
 
-Oracle NoSQL Database IntelliJ Plugin Version 1.5.2
+Oracle NoSQL Database IntelliJ Plugin Version 1.5.3
 
 ## Overview
 
@@ -68,8 +68,7 @@ Refer to the [Oracle NoSQL IntelliJ Plugin installation guide](https://docs.orac
 
 - IntelliJ IDEA Build '242.23726.103'
 - Oracle NoSQL Java SDK '5.4.16' or later ([Download here](https://github.com/oracle/nosql-java-sdk)).
-- Gradle version 8.10.2
-- Maven version 3.9.6
+- Gradle version 8.12
 - Java 17
 
 ## Getting Started
@@ -280,6 +279,11 @@ Once you connect to your database -
 2. Locate the target-index and right-click on it.
 3. Click **View Index DDL**.
 4. Index creation DDL will be displayed in another window which also has a option to copy the DDL.
+
+## Building the repository
+
+- Build the complete package with `gradle build` or clean and build with `./gradlew clean build`
+- The above build will generate the plugin zip in 'plugin/build/distributions/'
 
 
 ### Contributing
