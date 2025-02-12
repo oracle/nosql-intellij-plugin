@@ -1,7 +1,5 @@
 # Oracle NoSQL Database IntelliJ Plugin
 
-Oracle NoSQL Database IntelliJ Plugin Version 1.5.3
-
 ## Overview
 
 The Oracle NoSQL Database IntelliJ Plugin accelerates application development by integrating with IntelliJ IDEA. The plugin enables you to:
