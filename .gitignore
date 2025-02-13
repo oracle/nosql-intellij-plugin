@@ -12,15 +12,32 @@ target/
 /*.ucls
 /*.orig
 syntax: glob
-oracle.nosql/oracle.nosql.model/oracle.nosql.model.cloud/lib/guava.jar
-oracle.nosql/oracle.nosql.model/oracle.nosql.model.cloud/lib/jackson-core.jar
-oracle.nosql/oracle.nosql.model/oracle.nosql.model.cloud/lib/jackson-databind-2.9.7.jar
-oracle.nosql/oracle.nosql.model/oracle.nosql.model.cloud/lib/netty-all.jar
-oracle.nosql/oracle.nosql.model/oracle.nosql.model.cloud/lib/nosqldriver.jar
+oracle.nosql/model-cloud/lib/guava.jar
+oracle.nosql/model-cloud/lib/jackson-core.jar
+oracle.nosql/model-cloud/lib/jackson-databind-2.9.7.jar
+oracle.nosql/model-cloud/lib/netty-all.jar
+oracle.nosql/model-cloud/lib/nosqldriver.jar
 Client.jar
-oracle.nosql/oracle.nosql.intellij.plugin/.gradle/
-oracle.nosql/oracle.nosql.intellij.plugin/.idea/
-oracle.nosql/oracle.nosql.intellij.plugin/build/
-oracle.nosql/oracle.nosql.intellij.plugin/out/
+oracle.nosql/plugin/.gradle/
+oracle.nosql/plugin/.idea/
+oracle.nosql/plugin/build/
+oracle.nosql/plugin/out/
+oracle.nosql/model-cloud/.gradle/
+oracle.nosql/model-common/.gradle/
 # Default ignored files
-oracle.nosql/oracle.nosql.model/.idea/workspace.xml
+# Ignore build artifacts
+/target/
+*.class
+*.jar
+*.war
+*.ear
+*.prefs
+/out/
+/build/
+.gradle/
+
+# Ignore compiled dependencies (these should be managed by Gradle)
+oracle.nosql/model-cloud/lib/
+oracle.nosql/model-cloud/lib/*.jar
+
+
