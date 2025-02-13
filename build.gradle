@@ -1,0 +1,34 @@
+plugins {
+    id 'base'
+    id 'java'
+}
+group = 'oracle.nosql'
+subprojects {
+    apply plugin: 'java'
+
+    java {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+}
+
+
+tasks.register('buildCommon') {
+    group = 'intellij'
+    description = 'Builds the common model with Gradle'
+    dependsOn(':model-common:build')
+}
+
+tasks.register('buildCloud') {
+    group = 'intellij'
+    description = 'Builds the cloud model with Gradle'
+    dependsOn(':model-cloud:build')
+}
+
+tasks.register('buildPlugin') {
+    group = 'intellij'
+    description = 'Builds the IntelliJ plugin with Gradle'
+    dependsOn('buildCommon', 'buildCloud', ':plugin:build')
+}
+
+defaultTasks 'buildPlugin'
