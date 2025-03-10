@@ -11,7 +11,7 @@ repositories {
 }
 
 dependencies {
-    implementation('com.oracle.nosql.sdk:nosqldriver:5.4.16')
+    implementation('com.oracle.nosql.sdk:nosqldriver:5.4.17')
     testImplementation 'junit:junit:4.13.2'
 }
 
