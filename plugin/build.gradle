@@ -23,7 +23,7 @@ dependencies {
     //testCompile group: 'junit', name: 'junit', version: '4.12'
     implementation project(':model-common')
     implementation project(':model-cloud')
-    implementation('com.oracle.nosql.sdk:nosqldriver:5.4.16')
+    implementation('com.oracle.nosql.sdk:nosqldriver:5.4.17')
     implementation('com.fifesoft:rsyntaxtextarea:3.5.1')
     implementation('org.json:json:20240303')
     implementation('com.google.code.gson:gson:2.10.1')

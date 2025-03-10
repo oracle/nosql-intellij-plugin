@@ -65,7 +65,7 @@ Refer to the [Oracle NoSQL IntelliJ Plugin installation guide](https://docs.orac
 ### Prerequisites
 
 - IntelliJ IDEA Build '242.23726.103'
-- Oracle NoSQL Java SDK '5.4.16' or later ([Download here](https://github.com/oracle/nosql-java-sdk)).
+- Oracle NoSQL Java SDK '5.4.17' or later ([Download here](https://github.com/oracle/nosql-java-sdk)).
 - Gradle version 8.12
 - Java 17
 
