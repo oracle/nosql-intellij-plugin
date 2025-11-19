@@ -124,6 +124,7 @@
     -->
     <!--see https://blog.jetbrains.com/platform/2019/06/java-functionality-extracted-as-a-plugin -->
     <depends>com.intellij.modules.java</depends>
+    <depends>com.intellij.modules.json</depends>
 
     <extensions defaultExtensionNs="com.intellij">
         <!--projectConfigurable is for settings menu -->
