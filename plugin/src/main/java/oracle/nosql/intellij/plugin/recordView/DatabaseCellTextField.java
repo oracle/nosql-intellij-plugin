@@ -7,10 +7,8 @@
 
 package oracle.nosql.intellij.plugin.recordView;
 
-import com.intellij.find.EditorSearchSession;
 import com.intellij.ide.highlighter.HighlighterFactory;
 import com.intellij.lang.Language;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.EditorFactory;
@@ -135,12 +133,6 @@ public class DatabaseCellTextField extends EditorTextField {
                 });
             }
         }
-
-//        ApplicationManager.getApplication().invokeLater(() -> {
-//            if (!ex.isDisposed() && myLanguage.getID().equals("JSON")) {
-//                EditorSearchSession.start(ex, myProject);   // shows the Search palette
-//            }
-//        });
 
         ex.setEmbeddedIntoDialogWrapper(true);
         return ex;
