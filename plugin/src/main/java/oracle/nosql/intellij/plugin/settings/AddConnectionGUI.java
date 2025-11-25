@@ -93,15 +93,27 @@ public class AddConnectionGUI {
         int i = 3;
         JPanel panel = new JPanel();
         panel.setLayout(new FormLayout("fill:d:noGrow,left:4dlu:noGrow,fill:d:grow,left:4dlu:noGrow", // Column constraints
-                "center:max(d;4px):noGrow,top:4dlu:noGrow,center:d:noGrow,top:4dlu:noGrow," + // Row constraints up to row 17
-                        "center:max(d;4px):noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow," + "center:max(d;4px):noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow," + "center:max(d;4px):noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow," + "center:max(d;4px):noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow," + "center:max(d;4px):noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow," + // Row 18
-                        "center:max(d;4px):noGrow" // Row 19
+            "center:max(d;4px):noGrow,top:4dlu:noGrow,center:d:noGrow,top:4dlu:noGrow," + // Rows 1-4
+                "center:max(d;4px):noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow," + // Rows 5-8
+                "center:max(d;4px):noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow," + // Rows 9-12
+                "center:max(d;4px):noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow," + // Rows 13-16
+                "center:max(d;4px):noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow," + // Rows 17-20
+                "center:max(d;4px):noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow," + // Rows 21-24
+                // ADDED ROWS TO PREVENT CRASH
+                "center:max(d;4px):noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow," + // Rows 25-28
+                "center:max(d;4px):noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow," + // Rows 29-32
+                "center:max(d;4px):noGrow" // Row 33
         ));
         CellConstraints cc = new CellConstraints();
         final Spacer spacer1 = new Spacer();
         panel.add(spacer1, cc.xy(3, 1, CellConstraints.FILL, CellConstraints.DEFAULT));
 
         for (ConfigurableProperty property : profileType.getRequiredProperties()) {
+            String name = property.getName();
+            if(name.equals("USE_CONFIG_FILE") || name.equals(
+                "USE_SESSION_TOKEN") || name.equals("CONFIG_FILE") || name.equals("CONFIG_PROFILE")) {
+                continue;
+            }
             String prefKey = ConnectionDataProviderService.getKeyForProperty(profileType, property);
             JLabel propertyLabel = new JLabel();
             propertyLabel.setText(property.getLabel());

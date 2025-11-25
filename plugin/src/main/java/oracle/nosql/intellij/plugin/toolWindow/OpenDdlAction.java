@@ -26,6 +26,9 @@ import java.util.Objects;
 public class OpenDdlAction extends AnAction {
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
+        if (e.getProject() == null) {
+            return;
+        }
         String prefKeyForProfileType = "/profile_type";
         String profileType = ConnectionDataProviderService
                 .getInstance(Objects.requireNonNull(e.getProject())).
@@ -36,9 +39,9 @@ public class OpenDdlAction extends AnAction {
     }
     @Override
     public void update(AnActionEvent e) {
-        // Check your condition here and enable/disable the icon accordingly
-        boolean condition = checkYourCondition(e.getProject());
-        e.getPresentation().setEnabled(condition);
+        Project project = e.getProject();
+        boolean condition = project != null && checkYourCondition(project);
+        e.getPresentation().setEnabledAndVisible(condition);
     }
 
     @Override
@@ -48,6 +51,7 @@ public class OpenDdlAction extends AnAction {
     }
 
     private boolean checkYourCondition(Project project) {
+        if (project == null) return false;
         MultipleConnectionsDataProviderService mConService = MultipleConnectionsDataProviderService.getInstance(project);
         ConnectionDataProviderService conService = ConnectionDataProviderService.getInstance(project);
         ConnectionDataProviderService.State conState = conService.getState();
@@ -63,7 +67,7 @@ public class OpenDdlAction extends AnAction {
             return false;
         Map<String,String> uidToTypeMap = mConService.getState().uidToTypeMap;
         String type = uidToTypeMap.get(uid);
-        return type.equals("Onprem");
+        return "Onprem".equals(type);
     }
 
     @Override

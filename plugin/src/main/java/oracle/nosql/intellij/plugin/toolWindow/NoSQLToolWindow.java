@@ -181,22 +181,32 @@ public class NoSQLToolWindow extends SimpleToolWindowPanel {
     }
 
     public void refresh() {
-        myTreeModel.setRoot(null);
-        ProgressManager.getInstance().run(new Task.Backgroundable(project, "Refreshing NOSQL Schema", false) {
+        // Clear the tree immediately (must be on EDT)
+        ApplicationManager.getApplication().invokeLater(() -> {
+            myTreeModel.setRoot(null);
+        });
+        ProgressManager.getInstance().run(new Task.Backgroundable(project,
+            "Refreshing NOSQL Schema", false) {
             @Override
             public void run(@NotNull ProgressIndicator indicator) {
+                // Background work only: fetch the model
                 Datamodel store = getDataModel();
-                if (store == null) {
-                    myLayout.show(myContent, NON_LINKED_CARD_NAME);
-                    return; //TODO show card layout
-                }
+                // Switch back to EDT for *all* UI updates
                 ApplicationManager.getApplication().invokeLater(() -> {
-                    myTreeModel.setRoot(store);
-                    myLayout.show(myContent, CONTENT_CARD_NAME);
+                    if (store == null) {
+                        myLayout.show(myContent, NON_LINKED_CARD_NAME);
+                    } else {
+                        myTreeModel.setRoot(store);
+                        myLayout.show(myContent, CONTENT_CARD_NAME);
+                    }
+                    // Ensure UI refresh
+                    myContent.revalidate();
+                    myContent.repaint();
                 });
             }
         });
     }
+
 
     public BrowserTreeModel getMyTreeModel() {
         return myTreeModel;

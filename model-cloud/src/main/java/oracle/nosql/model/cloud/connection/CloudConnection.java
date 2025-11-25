@@ -67,19 +67,39 @@ public class CloudConnection extends AbstractConnection {
             System.setProperty("javax.net.ssl.trustStore", "");
             System.setProperty("javax.net.ssl.trustStorePassword", "");
             SignatureProvider ap;
+            String useConfigFile = (String) profile.getProperty(PublicCloud.PROPERTY_USE_CONFIG_FILE.getName());
             String endpoint = (String) profile.getProperty(PublicCloud.PROPERTY_ENDPOINT.getName());
-            String tenantId = (String) profile.getProperty(PublicCloud.PROPERTY_TENANTID.getName());
-            String userId = (String) profile.getProperty(PublicCloud.PROPERTY_USERID.getName());
-            String fingerprint = (String) profile.getProperty(PublicCloud.PROPERTY_FINGEPRINT.getName());
-            String privateKey = (String) profile.getProperty(PublicCloud.PROPERTY_PRIVATEKEY.getName());
-            String passphrase = (String) profile.getProperty(PublicCloud.PROPERTY_PASSPHRASE.getName());
+            config = new NoSQLHandleConfig(endpoint);
+
+            if (useConfigFile.equals("true")) {
+                String configFile = (String) profile.getProperty(PublicCloud.PROPERTY_CONFIG_FILE.getName());
+                String configProfile = (String) profile.getProperty(PublicCloud.PROPERTY_CONFIG_PROFILE.getName());
+                String useSessionToken = (String) profile.getProperty(PublicCloud.PROPERTY_USE_SESSION_TOKEN.getName());
+
+                if (useSessionToken.equals("true")) {
+                    ap = SignatureProvider.createWithSessionToken(configFile,
+                        configProfile);
+                } else {
+                    try {
+                        ap = new SignatureProvider(configFile, configProfile);
+                    } catch (Exception e) {
+                        throw new RuntimeException("Failed to establish " +
+                            "connection using config file");
+                    }
+                }
+
+            } else {
+                String tenantId = (String) profile.getProperty(PublicCloud.PROPERTY_TENANTID.getName());
+                String userId = (String) profile.getProperty(PublicCloud.PROPERTY_USERID.getName());
+                String fingerprint = (String) profile.getProperty(PublicCloud.PROPERTY_FINGEPRINT.getName());
+                String privateKey = (String) profile.getProperty(PublicCloud.PROPERTY_PRIVATEKEY.getName());
+                String passphrase = (String) profile.getProperty(PublicCloud.PROPERTY_PASSPHRASE.getName());
+
+                ap = new SignatureProvider(tenantId, userId, fingerprint, new File(privateKey), passphrase.toCharArray());
+            }
             String compartment = (String) profile.getProperty(PublicCloud.PROPERTY_COMPARTMENT.getName());
 
-    		config = new NoSQLHandleConfig(endpoint);
-
-            ap = new SignatureProvider(tenantId,userId,fingerprint,new File(privateKey),passphrase.toCharArray());
-
-    		config.setAuthorizationProvider(ap);
+            config.setAuthorizationProvider(ap);
 
     		if(compartment != null && !compartment.trim().isEmpty()) {
                 config.setDefaultCompartment(compartment);

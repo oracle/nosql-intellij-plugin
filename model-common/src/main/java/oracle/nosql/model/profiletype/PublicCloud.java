@@ -15,6 +15,8 @@ import oracle.nosql.model.connection.IConnectionProfileType;
 import oracle.nosql.model.sdk.CloudsimSDK;
 import oracle.nosql.model.sdk.SDK;
 
+import java.io.File;
+
 @SuppressWarnings("serial")
 public class PublicCloud extends AbstractConnectionProfileType implements
         IConnectionProfileType {
@@ -118,14 +120,50 @@ public class PublicCloud extends AbstractConnectionProfileType implements
                         .setDefaultValue("")
                         .setValidator(CloudsimSDK::validate);
 
+    public static final ConfigurableProperty PROPERTY_USE_CONFIG_FILE =
+        new BasicConfigurableProperty("USE_CONFIG_FILE")
+            .setLabel("Use config file")
+            .setDescription("Boolean value for use config file")
+            .setDefaultValue("false")
+            .setValidator(null);
+
+    public static final ConfigurableProperty PROPERTY_USE_SESSION_TOKEN =
+        new BasicConfigurableProperty("USE_SESSION_TOKEN")
+            .setLabel("Use session token")
+            .setDescription("Boolean value for use session token")
+            .setDefaultValue("false")
+            .setValidator(null);
+
+    public static final ConfigurableProperty PROPERTY_CONFIG_FILE =
+        new BasicConfigurableProperty("CONFIG_FILE")
+            .setLabel("OCI Config File")
+            .setDescription("OCI Configuration file")
+            .setDefaultValue("~/.oci/config")
+            .setValidator(input -> {
+                File tokenFile = new File(input);
+                if (!tokenFile.exists()) {
+                    return "Config file does not exist";
+                }
+                return null;
+            });
+
+    public static final ConfigurableProperty PROPERTY_CONFIG_PROFILE =
+        new BasicConfigurableProperty("CONFIG_PROFILE")
+            .setLabel("Configuration Profile")
+            .setDescription("Configuration Profile")
+            .setDefaultValue("DEFAULT")
+            .setValidator(null);
+
     public PublicCloud() {
         super();
         setDescription(
                 "Multi-tenant database as a service in a cloud environment");
-        declareRequiredProperty(CLOUD_CONNECTION_NAME,PROPERTY_ENDPOINT, SDK_PATH,
-                                PROPERTY_TENANTID, PROPERTY_USERID,
-                                PROPERTY_FINGEPRINT, PROPERTY_PRIVATEKEY,
-                                PROPERTY_PASSPHRASE, PROPERTY_COMPARTMENT);
+        declareRequiredProperty(CLOUD_CONNECTION_NAME,
+            PROPERTY_USE_CONFIG_FILE, PROPERTY_ENDPOINT, SDK_PATH,
+            PROPERTY_TENANTID, PROPERTY_USERID,
+            PROPERTY_FINGEPRINT, PROPERTY_PRIVATEKEY,
+            PROPERTY_PASSPHRASE, PROPERTY_COMPARTMENT, PROPERTY_USE_SESSION_TOKEN,
+            PROPERTY_CONFIG_FILE, PROPERTY_CONFIG_PROFILE);
     }
 
     @Override

@@ -38,18 +38,12 @@ public class CloudConfigFileGUI {
     private TextFieldWithBrowseButton sdkField;
     private TextFieldWithBrowseButton configfield;
     private JTextField profile;
-    private JTextField endpoint;
+    private String endpoint;
     private JTextField compartment;
     private JTextField connectionName;
     private List<JComponent> componentList;
-    private String tenantId;
-    private String userId;
-    private String fingerPrint;
-    private String privateKey;
-    private String inputProfile;
     private Project project;
-    private String passphrase;
-
+    private boolean useSessionToken;
     public CloudConfigFileGUI(Project project) {
         this.project = project;
         rootPanel.add(createCloudConfigPanel());
@@ -60,9 +54,13 @@ public class CloudConfigFileGUI {
         int i = 3;
         JPanel panel = new JPanel();
         panel.setLayout(new FormLayout("fill:d:noGrow,left:4dlu:noGrow,fill:d:grow,left:4dlu:noGrow", // Column constraints
-                "center:max(d;4px):noGrow,top:4dlu:noGrow,center:d:noGrow,top:4dlu:noGrow," + // Row constraints up to row 17
-                        "center:max(d;4px):noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow," + "center:max(d;4px):noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow," + "center:max(d;4px):noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow," + "center:max(d;4px):noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow," + "center:max(d;4px):noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow," + // Row 18
-                        "center:max(d;4px):noGrow" // Row 19
+            "center:max(d;4px):noGrow,top:4dlu:noGrow,center:d:noGrow,top:4dlu:noGrow," + // Row constraints up to row 17
+            "center:max(d;4px):noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow," +
+            "center:max(d;4px):noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow," +
+            "center:max(d;4px):noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow," +
+            "center:max(d;4px):noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow," +
+            "center:max(d;4px):noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow," + // Row 18
+            "center:max(d;4px):noGrow" // Row 19
         ));
         CellConstraints cc = new CellConstraints();
         final Spacer spacer1 = new Spacer();
@@ -76,20 +74,15 @@ public class CloudConfigFileGUI {
         panel.add(connectionName, cc.xy(3, i, CellConstraints.FILL, CellConstraints.FILL));
         componentList.add(connectionName);
 
-        endpoint = new JTextField("");
-        JLabel endpointLabel = new JLabel("Endpoint *");
-        endpoint.setName("Endpoint");
-        panel.add(endpointLabel, cc.xy(1, i + 2, CellConstraints.LEFT, CellConstraints.FILL));
-        panel.add(endpoint, cc.xy(3, i + 2, CellConstraints.FILL, CellConstraints.FILL));
-        componentList.add(endpoint);
-
         sdkField = new TextFieldWithBrowseButton(new JTextField(""));
         sdkField.setName("SDK Path");
         FileChooserDescriptor fileChooserDescriptor = new FileChooserDescriptor(false, true, false, false, false, false);
         JLabel sdkLabel = new JLabel("SDK path *");
         sdkField.addBrowseFolderListener("", "SDK Path", null, fileChooserDescriptor, TextComponentAccessor.TEXT_FIELD_WHOLE_TEXT);
-        panel.add(sdkLabel, cc.xy(1, i + 4, CellConstraints.LEFT, CellConstraints.FILL));
-        panel.add(sdkField, cc.xy(3, i + 4, CellConstraints.FILL, CellConstraints.FILL));
+        panel.add(sdkLabel, cc.xy(1, i + 2, CellConstraints.LEFT,
+            CellConstraints.FILL));
+        panel.add(sdkField, cc.xy(3, i + 2, CellConstraints.FILL,
+            CellConstraints.FILL));
         componentList.add(sdkField);
 
         configfield = new TextFieldWithBrowseButton(new JTextField(""));
@@ -97,24 +90,30 @@ public class CloudConfigFileGUI {
         fileChooserDescriptor = new FileChooserDescriptor(true, true, false, false, false, false);
         JLabel configLabel = new JLabel("Configuration File *");
         configfield.addBrowseFolderListener("", "Configuration File", null, fileChooserDescriptor, TextComponentAccessor.TEXT_FIELD_WHOLE_TEXT);
-        panel.add(configLabel, cc.xy(1, i + 6, CellConstraints.LEFT, CellConstraints.FILL));
-        panel.add(configfield, cc.xy(3, i + 6, CellConstraints.FILL, CellConstraints.FILL));
+        panel.add(configLabel, cc.xy(1, i + 4, CellConstraints.LEFT,
+            CellConstraints.FILL));
+        panel.add(configfield, cc.xy(3, i + 4, CellConstraints.FILL,
+            CellConstraints.FILL));
 
         componentList.add(configfield);
 
         profile = new JTextField("DEFAULT");
         JLabel profileLabel = new JLabel("Profile *");
         profile.setName("Profile");
-        panel.add(profileLabel, cc.xy(1, i + 8, CellConstraints.LEFT, CellConstraints.FILL));
-        panel.add(profile, cc.xy(3, i + 8, CellConstraints.FILL, CellConstraints.FILL));
+        panel.add(profileLabel, cc.xy(1, i + 6, CellConstraints.LEFT,
+            CellConstraints.FILL));
+        panel.add(profile, cc.xy(3, i + 6, CellConstraints.FILL,
+            CellConstraints.FILL));
         componentList.add(profile);
 
 
         compartment = new JTextField("");
         JLabel compartmentLabel = new JLabel("Compartment");
         compartment.setName(compartmentLabel.getText());
-        panel.add(compartmentLabel, cc.xy(1, i + 10, CellConstraints.LEFT, CellConstraints.FILL));
-        panel.add(compartment, cc.xy(3, i + 10, CellConstraints.FILL, CellConstraints.FILL));
+        panel.add(compartmentLabel, cc.xy(1, i + 8, CellConstraints.LEFT,
+            CellConstraints.FILL));
+        panel.add(compartment, cc.xy(3, i + 8, CellConstraints.FILL,
+            CellConstraints.FILL));
         componentList.add(compartment);
 
         return panel;
@@ -126,22 +125,47 @@ public class CloudConfigFileGUI {
     }
 
     public void apply() throws ConfigurationException {
+        checkData();
         validate();
-        List<String> data = getData();
         ConnectionDataProviderService conService = new ConnectionDataProviderService();
         IConnectionProfileType profileType = ConnectionFactory.getProfileTypeByName("Cloud");
-        int i = 0;
         for (ConfigurableProperty property : profileType.getRequiredProperties()) {
-            String prefKey = ConnectionDataProviderService.getKeyForProperty(profileType, property);
-            conService.putValue(prefKey, data.get(i));
-            i++;
+            if(property.getName().equals("USE_CONFIG_FILE")) {
+                String prefKey = ConnectionDataProviderService.getKeyForProperty(profileType, property);
+                conService.putValue(prefKey, "true");
+            }
+            if(property.getName().equals("USE_SESSION_TOKEN")) {
+                String prefKey = ConnectionDataProviderService.getKeyForProperty(profileType, property);
+                conService.putValue(prefKey, useSessionToken ? "true" :
+                    "false");
+            }
+            if(property.getName().equals("CONFIG_FILE")) {
+                String prefKey = ConnectionDataProviderService.getKeyForProperty(profileType, property);
+                conService.putValue(prefKey,configfield.getText());
+            }
+            if(property.getName().equals("CONFIG_PROFILE")) {
+                String prefKey = ConnectionDataProviderService.getKeyForProperty(profileType, property);
+                conService.putValue(prefKey,profile.getText());
+            }
+            if(property.getName().equals("SDK_PATH")) {
+                String prefKey = ConnectionDataProviderService.getKeyForProperty(profileType, property);
+                conService.putValue(prefKey,sdkField.getText());
+            }
+            if(property.getName().equals("Cloud" + "/connection-name")) {
+                String prefKey = ConnectionDataProviderService.getKeyForProperty(profileType, property);
+                conService.putValue(prefKey,connectionName.getText());
+            }
+            if(property.getName().equals("Cloud" + "/endpoint")) {
+                String prefKey = ConnectionDataProviderService.getKeyForProperty(profileType, property);
+                conService.putValue(prefKey,endpoint);
+            }
         }
         conService.putValue(ConnectionDataProviderService.KEY_PROFILE_TYPE, "Cloud");
         String comp = compartment.getText();
-        String UID = endpoint.getText();
+        String UID = endpoint;
         if (comp != null && !comp.isEmpty()) UID += " : " + comp;
         MultipleConnectionsDataProviderService mConService = MultipleConnectionsDataProviderService.getInstance(project);
-        assert endpoint.getText() != null;
+        assert endpoint != null;
         mConService.putValue(UID, conService);
         mConService.putUidToType(UID, "Cloud");
         Map<String, String> nameToUidMap = mConService.getNameToUidMap();
@@ -154,7 +178,7 @@ public class CloudConfigFileGUI {
     }
 
     private void validate() throws ConfigurationException {
-        if (endpoint.getText().isEmpty()) {
+        if (endpoint.isEmpty()) {
             String error = "Endpoint cannot be empty!";
             throw new ConfigurationException(error);
         } else if (sdkField.getText().isEmpty()) {
@@ -170,41 +194,20 @@ public class CloudConfigFileGUI {
             throw new ConfigurationException(validSDKerror);
     }
 
-    private List<String> getData() throws ConfigurationException {
-        List<String> data = new ArrayList<>();
-
-        tenantId = "";
-        userId = "";
-        fingerPrint = "";
-        privateKey = "";
-        passphrase = "";
-        inputProfile = profile.getText();
-        Map<String, String> fileData = parseConfig(configfield.getText(), inputProfile);
-
+    private void checkData() throws ConfigurationException {
+        Map<String, String> fileData = parseConfig(configfield.getText(),
+            profile.getText());
         for (Map.Entry<String, String> e : fileData.entrySet()) {
             String key = e.getKey();
-            String value = e.getValue();
-            if (key.equals("user")) userId = value;
-            else if (key.equals("fingerprint")) fingerPrint = value;
-            else if (key.equals("key_file")) privateKey = value;
-            else if (key.equals("tenancy")) tenantId = value;
-            else if (key.equals("pass_phrase")) passphrase = value;
+            if (key.equals("security_token_file")) {
+                useSessionToken = true;
+            }
+            if (key.equals("region")) {
+                String prefix = "https://nosql.";
+                String suffix = ".oci.oraclecloud.com";
+                endpoint = prefix + e.getValue() + suffix;
+            }
         }
-        if (tenantId.isEmpty() || userId.isEmpty() || fingerPrint.isEmpty() || privateKey.isEmpty()) {
-            String error = "Error in Config file!";
-            throw new ConfigurationException(error);
-        }
-        data.add(connectionName.getText());
-        data.add(endpoint.getText());
-        data.add(sdkField.getText());
-        data.add(tenantId);
-        data.add(userId);
-        data.add(fingerPrint);
-        data.add(privateKey);
-
-        data.add(passphrase);
-        data.add(compartment.getText());
-        return data;
     }
 
     private Map<String, String> parseConfig(String filePath, String section) {
@@ -239,6 +242,6 @@ public class CloudConfigFileGUI {
     }
 
     public String getNameAndUrl() {
-        return connectionName.getText() + " : " + endpoint.getText();
+        return connectionName.getText() + " : " + endpoint;
     }
 }
