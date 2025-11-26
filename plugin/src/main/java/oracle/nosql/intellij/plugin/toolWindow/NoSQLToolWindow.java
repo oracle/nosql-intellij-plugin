@@ -127,17 +127,19 @@ public class NoSQLToolWindow extends SimpleToolWindowPanel {
             String prefKey = "/" + DBProject.getInstance(project).getConnectionProfile().getType().getName() + "/" + "TENANT_ID";
             String schemaName = ConnectionDataProviderService.getInstance(project).getValue(prefKey);
             if (schemaName == null) schemaName = "CloudTenant";
-            if (con.getProfile().getType().getName().equals("Onprem")) {
-                ConnectionDataProviderService.State state = ConnectionDataProviderService.getInstance(project).getState();
-                schemaName = getNewSchemaName(state);
-            } else if (con.getProfile().getType().getName().equals("Cloud")) {
-                ConnectionDataProviderService.State state = ConnectionDataProviderService.getInstance(project).getState();
-                schemaName = getNewSchemaName(state);
-            }
-            else if(con.getProfile().getType().getName().equals("Cloudsim")){
-                ConnectionDataProviderService.State state = ConnectionDataProviderService.getInstance(project).getState();
-                schemaName = getNewSchemaName(state);
-            }
+            ConnectionDataProviderService.State state = ConnectionDataProviderService.getInstance(project).getState();
+            schemaName = getNewSchemaName(state);
+//            if (con.getProfile().getType().getName().equals("Onprem")) {
+//                ConnectionDataProviderService.State state = ConnectionDataProviderService.getInstance(project).getState();
+//                schemaName = getNewSchemaName(state);
+//            } else if (con.getProfile().getType().getName().equals("Cloud")) {
+//
+//                schemaName = getNewSchemaName(state);
+//            }
+//            else if(con.getProfile().getType().getName().equals("Cloudsim")){
+//                ConnectionDataProviderService.State state = ConnectionDataProviderService.getInstance(project).getState();
+//                schemaName = getNewSchemaName(state);
+//            }
             store = builder.build(conString, schemaName);
         } catch (Exception ex) {
             Notification notification = new Notification("Oracle NOSQL", "Oracle NoSQL Explorer", OracleNoSqlBundle.message("oracle.nosql.toolWindow.schema.get.error") + ex.getMessage(), NotificationType.ERROR);

@@ -22,13 +22,7 @@ import java.io.File;
 public class DBProject {
 
     private Project project;
-    @SuppressWarnings({"FieldCanBeLocal", "CanBeFinal"})
-    private static File libDir;
     private static final String ID = OracleNoSqlBundle.message("oracle.nosql.plugin.Id");
-    static {
-        libDir = new File(String.valueOf(GetPluginDesc().getPluginPath()),"lib/");
-        ConnectionFactory.setLibDir(libDir);
-    }
 
     private static IdeaPluginDescriptor GetPluginDesc() {
         return PluginManagerCore.getPlugin(PluginId.getId(ID));
@@ -47,17 +41,6 @@ public class DBProject {
         return getConnectionProfile().getConnection();
     }
 
-    private String getSDKPath() {
-        String profileName = ConnectionDataProviderService.getInstance(project).getValue(ConnectionDataProviderService.KEY_PROFILE_TYPE);
-
-        if (profileName == null) {
-            return null;
-        }
-        String PrefKeyForSDK =
-                "/" + profileName + "/" + "SDK_PATH"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        return ConnectionDataProviderService.getInstance(project).getValue(PrefKeyForSDK);
-    }
-
     public IConnectionProfile<?>  getConnectionProfile() throws Exception {
         IConnectionProfileType profileType =
                 ConnectionFactory.getProfileTypes()[0]; // default
@@ -70,12 +53,9 @@ public class DBProject {
                 break;
             }
         }
-        String SDK_Path = getSDKPath();
         IConnectionProfile<?> profile;
         profile = ConnectionFactory.createProfile(profileType,
-                "default", //$NON-NLS-1$
-                SDK_Path,
-                getClass().getClassLoader());
+                "default");
         for (ConfigurableProperty property : profileType
                 .getRequiredProperties()) {
             String perfPropertyValue = ConnectionDataProviderService.getInstance(project).getValue(

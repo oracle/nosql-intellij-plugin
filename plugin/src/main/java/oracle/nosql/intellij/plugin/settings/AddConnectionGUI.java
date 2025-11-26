@@ -107,24 +107,25 @@ public class AddConnectionGUI {
             propertyLabel.setText(property.getLabel());
             panel.add(propertyLabel, cc.xy(1, i));
 
-            if (property.getName().equals("SDK_PATH")) {
-                TextFieldWithBrowseButton propertyText = new TextFieldWithBrowseButton();
-                propertyText.putClientProperty("validator", property.getValidator());
-                propertyText.putClientProperty("default", property.getDefaultValue());
-                propertyText.putClientProperty("key", prefKey);
-                propertyText.setToolTipText(property.getDescription());
-                FileChooserDescriptor fileChooserDescriptor = new FileChooserDescriptor(false, true, false, false, false, false);
-                String textVal = conService.getValue(prefKey);
-                if (textVal == null) {
-                    propertyText.setText("");
-                    conService.putValue(prefKey, "");
-                } else {
-                    propertyText.setText(textVal);
-                }
-                //noinspection DialogTitleCapitalization
-                propertyText.addBrowseFolderListener("", "SDK Path", null, fileChooserDescriptor, TextComponentAccessor.TEXT_FIELD_WHOLE_TEXT);
-                panel.add(propertyText, cc.xyw(3, i, 2));
-            } else if (property.getName().equals("PRIVATEKEY")) {
+//            if (property.getName().equals("SDK_PATH")) {
+//                TextFieldWithBrowseButton propertyText = new TextFieldWithBrowseButton();
+//                propertyText.putClientProperty("validator", property.getValidator());
+//                propertyText.putClientProperty("default", property.getDefaultValue());
+//                propertyText.putClientProperty("key", prefKey);
+//                propertyText.setToolTipText(property.getDescription());
+//                FileChooserDescriptor fileChooserDescriptor = new FileChooserDescriptor(false, true, false, false, false, false);
+//                String textVal = conService.getValue(prefKey);
+//                if (textVal == null) {
+//                    propertyText.setText("");
+//                    conService.putValue(prefKey, "");
+//                } else {
+//                    propertyText.setText(textVal);
+//                }
+//                //noinspection DialogTitleCapitalization
+//                propertyText.addBrowseFolderListener("", "SDK Path", null, fileChooserDescriptor, TextComponentAccessor.TEXT_FIELD_WHOLE_TEXT);
+//                panel.add(propertyText, cc.xyw(3, i, 2));
+//            } else
+                if (property.getName().equals("PRIVATEKEY")) {
                 TextFieldWithBrowseButton privatekey = new TextFieldWithBrowseButton();
                 privatekey.putClientProperty("validator", property.getValidator());
                 privatekey.putClientProperty("default", property.getDefaultValue());

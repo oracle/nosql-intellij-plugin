@@ -36,6 +36,10 @@ public class OpenDdlAction extends AnAction {
     }
     @Override
     public void update(AnActionEvent e) {
+        Project project = e.getProject();
+        if (project == null) {
+            return;
+        }
         // Check your condition here and enable/disable the icon accordingly
         boolean condition = checkYourCondition(e.getProject());
         e.getPresentation().setEnabled(condition);

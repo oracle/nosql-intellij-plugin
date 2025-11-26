@@ -1,0 +1,51 @@
+{
+	"tables": [
+		{
+			"name": "X",
+			"fields": [
+				{
+					"name": "a",
+					"type": "string"
+				},
+				{
+					"name": "b",
+					"type": "integer"
+				}
+			]
+		},
+		{
+			"name": "Y",
+			"fields": [
+				{
+					"name": "a",
+					"type": "string"
+				},
+				{
+					"name": "b",
+					"type": "integer"
+				},
+				{
+					"name": "c",
+					"type": "string"
+				}
+			],
+			"primary": [
+				"a",
+				"b"
+			],
+			"shard": [
+				"b"
+			],
+			"indexes": [
+				{
+					"name": "index_a",
+					"fields": [
+						"c"
+					]
+				}
+			]
+		}
+	]
+}
+	   	
+	

@@ -13,22 +13,16 @@ subprojects {
 }
 
 
-tasks.register('buildCommon') {
+tasks.register('buildModel') {
     group = 'intellij'
-    description = 'Builds the common model with Gradle'
-    dependsOn(':model-common:build')
-}
-
-tasks.register('buildCloud') {
-    group = 'intellij'
-    description = 'Builds the cloud model with Gradle'
-    dependsOn(':model-cloud:build')
+    description = 'Builds the model with Gradle'
+    dependsOn(':model:build')
 }
 
 tasks.register('buildPlugin') {
     group = 'intellij'
     description = 'Builds the IntelliJ plugin with Gradle'
-    dependsOn('buildCommon', 'buildCloud', ':plugin:build')
+    dependsOn('buildModel', ':plugin:build')
 }
 
 defaultTasks 'buildPlugin'

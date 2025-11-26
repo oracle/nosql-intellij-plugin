@@ -1,6 +1,4 @@
 rootProject.name = 'nosql-intellij'
 
-include ':model-cloud'
-include ':model-common'
+include ':model'
 include ':plugin'
-
