@@ -18,6 +18,8 @@ oracle.nosql/plugin/.idea/
 oracle.nosql/plugin/build/
 oracle.nosql/plugin/out/
 oracle.nosql/model/.gradle/
+model/build
+plugin/build
 # Default ignored files
 # Ignore build artifacts
 /target/
