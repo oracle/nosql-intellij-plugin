@@ -47,7 +47,8 @@ class DatabaseTable extends JBTable {
                     String bin = jTable.getColumnName(jTable.columnAtPoint(e.getPoint()));
                     boolean binField = isBinField(table, bin);
                     if (!binField) {
-                        DatabaseTableCellDialog dialog = new DatabaseTableCellDialog(project, valueInCell);
+                        Field.Type valueType = table.getField(bin).getType();
+                        DatabaseTableCellDialog dialog = new DatabaseTableCellDialog(project, valueInCell, valueType);
                         dialog.show();
                     }
                 }

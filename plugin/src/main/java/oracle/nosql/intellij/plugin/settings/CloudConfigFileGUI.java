@@ -35,7 +35,6 @@ import java.util.*;
  */
 public class CloudConfigFileGUI {
     private JPanel rootPanel;
-    private TextFieldWithBrowseButton sdkField;
     private TextFieldWithBrowseButton configfield;
     private JTextField profile;
     private String endpoint;
@@ -74,20 +73,9 @@ public class CloudConfigFileGUI {
         panel.add(connectionName, cc.xy(3, i, CellConstraints.FILL, CellConstraints.FILL));
         componentList.add(connectionName);
 
-        sdkField = new TextFieldWithBrowseButton(new JTextField(""));
-        sdkField.setName("SDK Path");
-        FileChooserDescriptor fileChooserDescriptor = new FileChooserDescriptor(false, true, false, false, false, false);
-        JLabel sdkLabel = new JLabel("SDK path *");
-        sdkField.addBrowseFolderListener("", "SDK Path", null, fileChooserDescriptor, TextComponentAccessor.TEXT_FIELD_WHOLE_TEXT);
-        panel.add(sdkLabel, cc.xy(1, i + 2, CellConstraints.LEFT,
-            CellConstraints.FILL));
-        panel.add(sdkField, cc.xy(3, i + 2, CellConstraints.FILL,
-            CellConstraints.FILL));
-        componentList.add(sdkField);
-
         configfield = new TextFieldWithBrowseButton(new JTextField(""));
         configfield.setName("Config Path");
-        fileChooserDescriptor = new FileChooserDescriptor(true, true, false, false, false, false);
+        FileChooserDescriptor fileChooserDescriptor = new FileChooserDescriptor(true, true, false, false, false, false);
         JLabel configLabel = new JLabel("Configuration File *");
         configfield.addBrowseFolderListener("", "Configuration File", null, fileChooserDescriptor, TextComponentAccessor.TEXT_FIELD_WHOLE_TEXT);
         panel.add(configLabel, cc.xy(1, i + 4, CellConstraints.LEFT,
@@ -117,11 +105,6 @@ public class CloudConfigFileGUI {
         componentList.add(compartment);
 
         return panel;
-    }
-    public String validateSDK(String path) {
-        // This is basic validation
-        File sdkDir = new File(path + File.separator + "lib" +File.separator);
-        return sdkDir.isDirectory() ? null : "Invalid SDK path, please set a correct SDK path.";
     }
 
     public void apply() throws ConfigurationException {
@@ -181,17 +164,12 @@ public class CloudConfigFileGUI {
         if (endpoint.isEmpty()) {
             String error = "Endpoint cannot be empty!";
             throw new ConfigurationException(error);
-        } else if (sdkField.getText().isEmpty()) {
-            String error = "SDK Path cannot be empty!";
-            throw new ConfigurationException(error);
         } else if (connectionName.getText().isEmpty()) {
             String error = "Connection Name cannot be empty!";
             throw new ConfigurationException(error);
         }
 
-        String validSDKerror = validateSDK(sdkField.getText());
-        if(validSDKerror!=null && !validSDKerror.isEmpty())
-            throw new ConfigurationException(validSDKerror);
+
     }
 
     private void checkData() throws ConfigurationException {

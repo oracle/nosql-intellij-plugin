@@ -12,18 +12,14 @@ target/
 /*.ucls
 /*.orig
 syntax: glob
-oracle.nosql/model-cloud/lib/guava.jar
-oracle.nosql/model-cloud/lib/jackson-core.jar
-oracle.nosql/model-cloud/lib/jackson-databind-2.9.7.jar
-oracle.nosql/model-cloud/lib/netty-all.jar
-oracle.nosql/model-cloud/lib/nosqldriver.jar
 Client.jar
 oracle.nosql/plugin/.gradle/
 oracle.nosql/plugin/.idea/
 oracle.nosql/plugin/build/
 oracle.nosql/plugin/out/
-oracle.nosql/model-cloud/.gradle/
-oracle.nosql/model-common/.gradle/
+oracle.nosql/model/.gradle/
+model/build
+plugin/build
 # Default ignored files
 # Ignore build artifacts
 /target/
@@ -35,9 +31,4 @@ oracle.nosql/model-common/.gradle/
 /out/
 /build/
 .gradle/
-
-# Ignore compiled dependencies (these should be managed by Gradle)
-oracle.nosql/model-cloud/lib/
-oracle.nosql/model-cloud/lib/*.jar
-
 
