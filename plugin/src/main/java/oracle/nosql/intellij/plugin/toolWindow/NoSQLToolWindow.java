@@ -129,17 +129,6 @@ public class NoSQLToolWindow extends SimpleToolWindowPanel {
             if (schemaName == null) schemaName = "CloudTenant";
             ConnectionDataProviderService.State state = ConnectionDataProviderService.getInstance(project).getState();
             schemaName = getNewSchemaName(state);
-//            if (con.getProfile().getType().getName().equals("Onprem")) {
-//                ConnectionDataProviderService.State state = ConnectionDataProviderService.getInstance(project).getState();
-//                schemaName = getNewSchemaName(state);
-//            } else if (con.getProfile().getType().getName().equals("Cloud")) {
-//
-//                schemaName = getNewSchemaName(state);
-//            }
-//            else if(con.getProfile().getType().getName().equals("Cloudsim")){
-//                ConnectionDataProviderService.State state = ConnectionDataProviderService.getInstance(project).getState();
-//                schemaName = getNewSchemaName(state);
-//            }
             store = builder.build(conString, schemaName);
         } catch (Exception ex) {
             Notification notification = new Notification("Oracle NOSQL", "Oracle NoSQL Explorer", OracleNoSqlBundle.message("oracle.nosql.toolWindow.schema.get.error") + ex.getMessage(), NotificationType.ERROR);

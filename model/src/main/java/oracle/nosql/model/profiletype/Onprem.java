@@ -43,13 +43,6 @@ public class Onprem extends AbstractConnectionProfileType implements
                         return null;
                     });
 
-//    public static final ConfigurableProperty SDK_PATH =
-//            new BasicConfigurableProperty("SDK_PATH")
-//                    .setLabel("SDK path *")
-//                    .setDescription("Select path to Nosql Java SDK folder")
-//                    .setDefaultValue("")
-//                    .setValidator(CloudsimSDK::validate);
-
     public static final ConfigurableProperty SECURITY =
             new BasicConfigurableProperty("SECURITY")
                     .setLabel("Security")
@@ -131,17 +124,5 @@ public class Onprem extends AbstractConnectionProfileType implements
     public String getName() {
         return PROFILE_TYPE;
     }
-
-    /**
-     * Register this profile to a connection factory.
-     */
-//    static {
-//        try {
-//            ConnectionFactory.register((IConnectionProfileType) new Onprem(),
-//                    "oracle.nosql.model.cloud.connection.OnpremConnectionProfile");
-//        } catch (Exception ex) {
-//            throw new ExceptionInInitializerError(ex);
-//        }
-//    }
 
 }

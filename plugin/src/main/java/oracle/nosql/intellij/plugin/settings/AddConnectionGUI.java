@@ -1,9 +1,9 @@
 /*
-* Copyright (C) 2024, 2024 Oracle and/or its affiliates.
-*
-* Licensed under the Universal Permissive License v 1.0 as shown at
-* https://oss.oracle.com/licenses/upl/
-*/
+ * Copyright (C) 2024, 2024 Oracle and/or its affiliates.
+ *
+ * Licensed under the Universal Permissive License v 1.0 as shown at
+ * https://oss.oracle.com/licenses/upl/
+ */
 
 package oracle.nosql.intellij.plugin.settings;
 
@@ -107,25 +107,7 @@ public class AddConnectionGUI {
             propertyLabel.setText(property.getLabel());
             panel.add(propertyLabel, cc.xy(1, i));
 
-//            if (property.getName().equals("SDK_PATH")) {
-//                TextFieldWithBrowseButton propertyText = new TextFieldWithBrowseButton();
-//                propertyText.putClientProperty("validator", property.getValidator());
-//                propertyText.putClientProperty("default", property.getDefaultValue());
-//                propertyText.putClientProperty("key", prefKey);
-//                propertyText.setToolTipText(property.getDescription());
-//                FileChooserDescriptor fileChooserDescriptor = new FileChooserDescriptor(false, true, false, false, false, false);
-//                String textVal = conService.getValue(prefKey);
-//                if (textVal == null) {
-//                    propertyText.setText("");
-//                    conService.putValue(prefKey, "");
-//                } else {
-//                    propertyText.setText(textVal);
-//                }
-//                //noinspection DialogTitleCapitalization
-//                propertyText.addBrowseFolderListener("", "SDK Path", null, fileChooserDescriptor, TextComponentAccessor.TEXT_FIELD_WHOLE_TEXT);
-//                panel.add(propertyText, cc.xyw(3, i, 2));
-//            } else
-                if (property.getName().equals("PRIVATEKEY")) {
+            if (property.getName().equals("PRIVATEKEY")) {
                 TextFieldWithBrowseButton privatekey = new TextFieldWithBrowseButton();
                 privatekey.putClientProperty("validator", property.getValidator());
                 privatekey.putClientProperty("default", property.getDefaultValue());
@@ -428,11 +410,11 @@ public class AddConnectionGUI {
         String namespace = Objects.requireNonNull(conService.getState()).dict.get("/Onprem/NAMESPACE");
         if (namespace != null && !namespace.isEmpty()) {
             connectionNamespace = new String(namespace);
-            connectionUID += " : " + connectionNamespace ;
+            connectionUID += " : " + connectionNamespace;
         }
 
         String tenant_id = Objects.requireNonNull(conService.getState()).dict.get("/Cloudsim/TENANT_ID");
-        if(tenant_id!=null && !tenant_id.isEmpty()){
+        if (tenant_id != null && !tenant_id.isEmpty()) {
             connectionTenantId = new String(tenant_id);
             connectionUID += " : " + connectionTenantId;
         }
@@ -444,11 +426,10 @@ public class AddConnectionGUI {
             String error = "Connection name already exists!";
             throw new ConfigurationException(error);
         }
-        if(!mConService.getState().dict.containsKey(connectionUID)) {
+        if (!mConService.getState().dict.containsKey(connectionUID)) {
             mConService.putValue(connectionUID, conService);
             mConService.putUidToType(connectionUID, profileTypeName);
-        }
-        else {
+        } else {
             String error = "Connection UID already exists!";
             throw new ConfigurationException(error);
         }

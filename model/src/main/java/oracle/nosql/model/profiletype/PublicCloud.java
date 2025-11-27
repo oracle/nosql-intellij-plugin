@@ -10,7 +10,6 @@ package oracle.nosql.model.profiletype;
 import oracle.nosql.model.connection.AbstractConnectionProfileType;
 import oracle.nosql.model.connection.BasicConfigurableProperty;
 import oracle.nosql.model.connection.ConfigurableProperty;
-import oracle.nosql.model.connection.ConnectionFactory;
 import oracle.nosql.model.connection.IConnectionProfileType;
 
 @SuppressWarnings("serial")
@@ -109,13 +108,6 @@ public class PublicCloud extends AbstractConnectionProfileType implements
                     .setDefaultValue("")
                     .setValidator(null);
 
-//    public static final ConfigurableProperty SDK_PATH =
-//            new BasicConfigurableProperty("SDK_PATH")
-//                    .setLabel("SDK path *")
-//                        .setDescription("Select path to SDK folder")
-//                        .setDefaultValue("")
-//                        .setValidator(CloudsimSDK::validate);
-
     public PublicCloud() {
         super();
         setDescription(
@@ -130,17 +122,5 @@ public class PublicCloud extends AbstractConnectionProfileType implements
     public String getName() {
         return PROFILE_TYPE;
     }
-
-    /**
-     * Register this profile to a connection factory.
-     */
-//    static {
-//        try {
-//            ConnectionFactory.register((IConnectionProfileType) new PublicCloud(),
-//                    "oracle.nosql.model.cloud.connection.PublicCloudConnectionProfile");
-//        } catch (Exception ex) {
-//            throw new ExceptionInInitializerError(ex);
-//        }
-//    }
 
 }

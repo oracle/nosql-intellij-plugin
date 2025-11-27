@@ -35,7 +35,6 @@ import java.util.*;
  */
 public class CloudConfigFileGUI {
     private JPanel rootPanel;
-//    private TextFieldWithBrowseButton sdkField;
     private TextFieldWithBrowseButton configfield;
     private JTextField profile;
     private JTextField endpoint;
@@ -82,15 +81,6 @@ public class CloudConfigFileGUI {
         panel.add(endpointLabel, cc.xy(1, i + 2, CellConstraints.LEFT, CellConstraints.FILL));
         panel.add(endpoint, cc.xy(3, i + 2, CellConstraints.FILL, CellConstraints.FILL));
         componentList.add(endpoint);
-
-//        sdkField = new TextFieldWithBrowseButton(new JTextField(""));
-//        sdkField.setName("SDK Path");
-//        FileChooserDescriptor fileChooserDescriptor = new FileChooserDescriptor(false, true, false, false, false, false);
-//        JLabel sdkLabel = new JLabel("SDK path *");
-//        sdkField.addBrowseFolderListener("", "SDK Path", null, fileChooserDescriptor, TextComponentAccessor.TEXT_FIELD_WHOLE_TEXT);
-//        panel.add(sdkLabel, cc.xy(1, i + 4, CellConstraints.LEFT, CellConstraints.FILL));
-//        panel.add(sdkField, cc.xy(3, i + 4, CellConstraints.FILL, CellConstraints.FILL));
-//        componentList.add(sdkField);
 
         configfield = new TextFieldWithBrowseButton(new JTextField(""));
         configfield.setName("Config Path");
@@ -186,7 +176,6 @@ public class CloudConfigFileGUI {
         }
         data.add(connectionName.getText());
         data.add(endpoint.getText());
-//        data.add(sdkField.getText());
         data.add(tenantId);
         data.add(userId);
         data.add(fingerPrint);
