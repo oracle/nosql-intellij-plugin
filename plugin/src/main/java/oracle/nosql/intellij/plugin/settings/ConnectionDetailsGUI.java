@@ -50,6 +50,7 @@ public class ConnectionDetailsGUI {
         profileTypeMap.put("Service URL", "Cloudsim");
         profileTypeMap.put("Proxy URL", "Onprem");
         profileTypeMap.put("Data Region endpoint", "Cloud");
+        profileTypeMap.put("OCI Configuration file", "Cloud");
         IConnectionProfileType profile = null;
         for (IConnectionProfileType type : profileTypes) {
             if (type.getName().equals(profileType)) {
@@ -93,7 +94,7 @@ public class ConnectionDetailsGUI {
             String name = property.getName();
             if (name.equals("TENANTID") || name.equals("USERID") ||
                 name.equals("FINGERPRINT") || name.equals("PASSPHRASE") ||
-                name.equals("PRIVATEKEY")) {
+                name.equals("PRIVATEKEY") || name.equals("Cloud/endpoint")) {
                 if (useConfigFile) continue;
             }
 
@@ -378,9 +379,15 @@ public class ConnectionDetailsGUI {
         for (Component component : parentComp.getComponents()) {
             if (component instanceof JTextField) {
                 JTextField propertyText = (JTextField) component;
-                if (propertyText.getClientProperty("ToolTipText").equals("Service URL") || propertyText.getClientProperty("ToolTipText").equals("Proxy URL") || propertyText.getClientProperty("ToolTipText").equals("Data Region endpoint")) {
+                if (propertyText.getClientProperty("ToolTipText").equals("Service URL") ||
+                    propertyText.getClientProperty("ToolTipText").equals("Proxy URL") ||
+                    propertyText.getClientProperty("ToolTipText").equals(
+                        "Data Region endpoint") || propertyText.getClientProperty("ToolTipText").equals("OCI Configuration file")) {
                     connectionURL = propertyText.getText();
                     profileType = profileTypeMap.get(propertyText.getClientProperty("ToolTipText").toString());
+                }
+                if(propertyText.getClientProperty("ToolTipText").equals("Configuration Profile")) {
+                    connectionURL += " : " + propertyText.getText();
                 }
                 if (propertyText.getClientProperty("ToolTipText").equals("Connection Name"))
                     connectionName = propertyText.getText();

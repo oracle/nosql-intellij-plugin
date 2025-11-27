@@ -37,7 +37,6 @@ public class CloudConfigFileGUI {
     private JPanel rootPanel;
     private TextFieldWithBrowseButton configfield;
     private JTextField profile;
-    private String endpoint;
     private JTextField compartment;
     private JTextField connectionName;
     private List<JComponent> componentList;
@@ -130,25 +129,20 @@ public class CloudConfigFileGUI {
                 String prefKey = ConnectionDataProviderService.getKeyForProperty(profileType, property);
                 conService.putValue(prefKey,profile.getText());
             }
-            if(property.getName().equals("SDK_PATH")) {
-                String prefKey = ConnectionDataProviderService.getKeyForProperty(profileType, property);
-                conService.putValue(prefKey,sdkField.getText());
-            }
             if(property.getName().equals("Cloud" + "/connection-name")) {
                 String prefKey = ConnectionDataProviderService.getKeyForProperty(profileType, property);
                 conService.putValue(prefKey,connectionName.getText());
             }
-            if(property.getName().equals("Cloud" + "/endpoint")) {
+            if(property.getName().equals("COMPARTMENT")) {
                 String prefKey = ConnectionDataProviderService.getKeyForProperty(profileType, property);
-                conService.putValue(prefKey,endpoint);
+                conService.putValue(prefKey,compartment.getText());
             }
         }
         conService.putValue(ConnectionDataProviderService.KEY_PROFILE_TYPE, "Cloud");
         String comp = compartment.getText();
-        String UID = endpoint;
+        String UID = configfield.getText() + " : " + profile.getText();
         if (comp != null && !comp.isEmpty()) UID += " : " + comp;
         MultipleConnectionsDataProviderService mConService = MultipleConnectionsDataProviderService.getInstance(project);
-        assert endpoint != null;
         mConService.putValue(UID, conService);
         mConService.putUidToType(UID, "Cloud");
         Map<String, String> nameToUidMap = mConService.getNameToUidMap();
@@ -161,10 +155,7 @@ public class CloudConfigFileGUI {
     }
 
     private void validate() throws ConfigurationException {
-        if (endpoint.isEmpty()) {
-            String error = "Endpoint cannot be empty!";
-            throw new ConfigurationException(error);
-        } else if (connectionName.getText().isEmpty()) {
+        if (connectionName.getText().isEmpty()) {
             String error = "Connection Name cannot be empty!";
             throw new ConfigurationException(error);
         }
@@ -179,11 +170,6 @@ public class CloudConfigFileGUI {
             String key = e.getKey();
             if (key.equals("security_token_file")) {
                 useSessionToken = true;
-            }
-            if (key.equals("region")) {
-                String prefix = "https://nosql.";
-                String suffix = ".oci.oraclecloud.com";
-                endpoint = prefix + e.getValue() + suffix;
             }
         }
     }
@@ -220,6 +206,7 @@ public class CloudConfigFileGUI {
     }
 
     public String getNameAndUrl() {
-        return connectionName.getText() + " : " + endpoint;
+        return connectionName.getText() + " : " + configfield.getText() + " :" +
+            " " + profile.getText();
     }
 }

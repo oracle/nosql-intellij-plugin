@@ -48,7 +48,7 @@ public class AllConnectionsSettingGUI {
     private MultipleConnectionsDataProviderService mConService;
     private Project project;
 
-    public AllConnectionsSettingGUI(@NotNull MultipleConnectionsDataProviderService service, Project project) {
+    public AllConnectionsSettingGUI(MultipleConnectionsDataProviderService service, Project project) {
         isModified = false;
         mConService = service;
         this.project = project;
