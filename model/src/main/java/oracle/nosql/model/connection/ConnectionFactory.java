@@ -18,7 +18,7 @@ import oracle.nosql.model.cloud.connection.OnpremConnectionProfile;
 /**
  * ConnectionFactory creates {@link IConnectionProfile connection profile}.
  * Each concrete profile requires its own specific properties to be configured.
- * @author pinaki poddar
+ * @author lsatpal
  *
  */
 public class ConnectionFactory {

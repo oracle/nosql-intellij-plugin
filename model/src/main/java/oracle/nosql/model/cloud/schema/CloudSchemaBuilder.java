@@ -9,10 +9,19 @@ package oracle.nosql.model.cloud.schema;
 
 import oracle.nosql.driver.IndexNotFoundException;
 import oracle.nosql.driver.NoSQLHandle;
-import oracle.nosql.driver.ops.*;
+import oracle.nosql.driver.ops.GetTableRequest;
+import oracle.nosql.driver.ops.ListTablesRequest;
+import oracle.nosql.driver.ops.TableLimits;
+import oracle.nosql.driver.ops.TableRequest;
+import oracle.nosql.driver.ops.TableResult;
 import oracle.nosql.driver.ops.TableResult.State;
 import oracle.nosql.model.cloud.connection.CloudConnection;
-import oracle.nosql.model.schema.*;
+import oracle.nosql.model.schema.Datamodel;
+import oracle.nosql.model.schema.Field;
+import oracle.nosql.model.schema.Index;
+import oracle.nosql.model.schema.Schema;
+import oracle.nosql.model.schema.SchemaBuilder;
+import oracle.nosql.model.schema.Table;
 
 import java.io.IOException;
 import java.util.Arrays;
