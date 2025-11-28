@@ -29,6 +29,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
+import static oracle.nosql.model.profiletype.PublicCloud.PROPERTY_USE_CONFIG_FILE;
+
 public class ConnectionDetailsGUI {
     private ConnectionDataProviderService conService;
     private JPanel rootPanel;
@@ -86,10 +88,10 @@ public class ConnectionDetailsGUI {
         for (ConfigurableProperty property : profileType
                 .getRequiredProperties()) {
             String prefKey = ConnectionDataProviderService.getKeyForProperty(profileType, property);
-            if (property.getName().equals("USE_CONFIG_FILE")) {
-                String value = conService.getValue(prefKey);
-                useConfigFile = "true".equals(value);
-            }
+            // At the start of getProfileTypeSpecificUI
+            String useConfigFileValue = conService.getValue(ConnectionDataProviderService.getKeyForProperty(profileType, PROPERTY_USE_CONFIG_FILE));
+            boolean useConfigFile = "true".equals(useConfigFileValue);
+
 
             String name = property.getName();
             if (name.equals("TENANTID") || name.equals("USERID") ||
@@ -108,25 +110,7 @@ public class ConnectionDetailsGUI {
             propertyLabel.setText(property.getLabel());
             panel.add(propertyLabel, cc.xy(1, i));
 
-            if (property.getName().equals("SDK_PATH")) {
-                TextFieldWithBrowseButton propertyText = new TextFieldWithBrowseButton();
-                propertyText.putClientProperty("validator", property.getValidator());
-                propertyText.putClientProperty("default", property.getDefaultValue());
-                propertyText.putClientProperty("key", prefKey);
-                propertyText.setToolTipText(property.getDescription());
-                FileChooserDescriptor fileChooserDescriptor = new FileChooserDescriptor(false, true, false,
-                        false, false, false);
-                String textVal = conService.getValue(prefKey);
-                if (textVal == null) {
-                    propertyText.setText("");
-                    conService.putValue(prefKey, "");
-                } else {
-                    propertyText.setText(textVal);
-                }
-                //noinspection DialogTitleCapitalization
-                propertyText.addBrowseFolderListener("", "SDK Path", null, fileChooserDescriptor, TextComponentAccessor.TEXT_FIELD_WHOLE_TEXT);
-                panel.add(propertyText, cc.xyw(3, i, 2));
-            } else if (property.getName().equals("PRIVATEKEY")) {
+            if (property.getName().equals("PRIVATEKEY")) {
                 TextFieldWithBrowseButton privatekey = new TextFieldWithBrowseButton();
                 privatekey.putClientProperty("validator", property.getValidator());
                 privatekey.putClientProperty("default", property.getDefaultValue());

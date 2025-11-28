@@ -112,21 +112,21 @@ public class PublicCloud extends AbstractConnectionProfileType implements
 
     public static final ConfigurableProperty PROPERTY_USE_CONFIG_FILE =
         new BasicConfigurableProperty("USE_CONFIG_FILE")
-            .setLabel("Use config file")
+            .setLabel("Use config file *")
             .setDescription("Boolean value for use config file")
             .setDefaultValue("false")
             .setValidator(null);
 
     public static final ConfigurableProperty PROPERTY_USE_SESSION_TOKEN =
         new BasicConfigurableProperty("USE_SESSION_TOKEN")
-            .setLabel("Use session token")
+            .setLabel("Use session token *")
             .setDescription("Boolean value for use session token")
             .setDefaultValue("false")
             .setValidator(null);
 
     public static final ConfigurableProperty PROPERTY_CONFIG_FILE =
         new BasicConfigurableProperty("CONFIG_FILE")
-            .setLabel("OCI Config File")
+            .setLabel("OCI Config File *")
             .setDescription("OCI Configuration file")
             .setDefaultValue("~/.oci/config")
             .setValidator(input -> {
@@ -139,7 +139,7 @@ public class PublicCloud extends AbstractConnectionProfileType implements
 
     public static final ConfigurableProperty PROPERTY_CONFIG_PROFILE =
         new BasicConfigurableProperty("CONFIG_PROFILE")
-            .setLabel("Configuration Profile")
+            .setLabel("Configuration Profile *")
             .setDescription("Configuration Profile")
             .setDefaultValue("DEFAULT")
             .setValidator(null);
