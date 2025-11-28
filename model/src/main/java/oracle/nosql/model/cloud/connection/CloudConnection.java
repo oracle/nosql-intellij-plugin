@@ -7,7 +7,12 @@
 
 package oracle.nosql.model.cloud.connection;
 
-import oracle.nosql.driver.*;
+import oracle.nosql.driver.NoSQLException;
+import oracle.nosql.driver.NoSQLHandle;
+import oracle.nosql.driver.NoSQLHandleConfig;
+import oracle.nosql.driver.NoSQLHandleFactory;
+import oracle.nosql.driver.RequestTimeoutException;
+import oracle.nosql.driver.OperationThrottlingException;
 import oracle.nosql.driver.iam.SignatureProvider;
 import oracle.nosql.driver.kv.StoreAccessTokenProvider;
 import oracle.nosql.driver.ops.*;

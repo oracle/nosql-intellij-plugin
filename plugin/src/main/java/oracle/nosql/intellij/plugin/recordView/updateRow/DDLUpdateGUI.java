@@ -7,9 +7,7 @@
 
 package oracle.nosql.intellij.plugin.recordView.updateRow;
 
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
+import javax.swing.*;
 
 public class DDLUpdateGUI {
     private JPanel ddlMainPanel;
