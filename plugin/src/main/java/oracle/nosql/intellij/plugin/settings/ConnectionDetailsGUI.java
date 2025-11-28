@@ -29,6 +29,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
+import static oracle.nosql.model.profiletype.PublicCloud.PROPERTY_USE_CONFIG_FILE;
+
 public class ConnectionDetailsGUI {
     private ConnectionDataProviderService conService;
     private JPanel rootPanel;
@@ -41,6 +43,7 @@ public class ConnectionDetailsGUI {
     private MultipleConnectionsDataProviderService mConService;
     private Map<String, String> profileTypeMap;
     private String connectionUID;
+    private boolean useConfigFile;
 
     public ConnectionDetailsGUI(String profileType, @NotNull ConnectionDataProviderService conService, MultipleConnectionsDataProviderService mConService) {
         this.mConService = mConService;
@@ -49,6 +52,7 @@ public class ConnectionDetailsGUI {
         profileTypeMap.put("Service URL", "Cloudsim");
         profileTypeMap.put("Proxy URL", "Onprem");
         profileTypeMap.put("Data Region endpoint", "Cloud");
+        profileTypeMap.put("OCI Configuration file", "Cloud");
         IConnectionProfileType profile = null;
         for (IConnectionProfileType type : profileTypes) {
             if (type.getName().equals(profileType)) {
@@ -65,15 +69,17 @@ public class ConnectionDetailsGUI {
     private JComponent getProfileTypeSpecificUI(IConnectionProfileType profileType) {
         int i = 3;
         JPanel panel = new JPanel();
-        panel.setLayout(new FormLayout(
-                "fill:d:noGrow,left:4dlu:noGrow,fill:d:grow,left:4dlu:noGrow", // Column constraints
-                "center:max(d;4px):noGrow,top:4dlu:noGrow,center:d:noGrow,top:4dlu:noGrow," + // Row constraints up to row 17
-                        "center:max(d;4px):noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow," +
-                        "center:max(d;4px):noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow," +
-                        "center:max(d;4px):noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow," +
-                        "center:max(d;4px):noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow," +
-                        "center:max(d;4px):noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow," + // Row 18
-                        "center:max(d;4px):noGrow" // Row 19
+        panel.setLayout(new FormLayout("fill:d:noGrow,left:4dlu:noGrow,fill:d:grow,left:4dlu:noGrow", // Column constraints
+            "center:max(d;4px):noGrow,top:4dlu:noGrow,center:d:noGrow,top:4dlu:noGrow," + // Rows 1-4
+                "center:max(d;4px):noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow," + // Rows 5-8
+                "center:max(d;4px):noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow," + // Rows 9-12
+                "center:max(d;4px):noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow," + // Rows 13-16
+                "center:max(d;4px):noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow," + // Rows 17-20
+                "center:max(d;4px):noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow," + // Rows 21-24
+                // ADDED ROWS TO PREVENT CRASH
+                "center:max(d;4px):noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow," + // Rows 25-28
+                "center:max(d;4px):noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow," + // Rows 29-32
+                "center:max(d;4px):noGrow" // Row 33
         ));
         CellConstraints cc = new CellConstraints();
         final Spacer spacer1 = new Spacer();
@@ -82,29 +88,29 @@ public class ConnectionDetailsGUI {
         for (ConfigurableProperty property : profileType
                 .getRequiredProperties()) {
             String prefKey = ConnectionDataProviderService.getKeyForProperty(profileType, property);
+            // At the start of getProfileTypeSpecificUI
+            String useConfigFileValue = conService.getValue(ConnectionDataProviderService.getKeyForProperty(profileType, PROPERTY_USE_CONFIG_FILE));
+            boolean useConfigFile = "true".equals(useConfigFileValue);
+
+
+            String name = property.getName();
+            if (name.equals("TENANTID") || name.equals("USERID") ||
+                name.equals("FINGERPRINT") || name.equals("PASSPHRASE") ||
+                name.equals("PRIVATEKEY") || name.equals("Cloud/endpoint")) {
+                if (useConfigFile) continue;
+            }
+
+            if(!useConfigFile) {
+                if(name.equals("USE_CONFIG_FILE") || name.equals(
+                    "USE_SESSION_TOKEN") || name.equals("CONFIG_FILE") || name.equals("CONFIG_PROFILE")) {
+                    continue;
+                }
+            }
             JLabel propertyLabel = new JLabel();
             propertyLabel.setText(property.getLabel());
             panel.add(propertyLabel, cc.xy(1, i));
 
-            if (property.getName().equals("SDK_PATH")) {
-                TextFieldWithBrowseButton propertyText = new TextFieldWithBrowseButton();
-                propertyText.putClientProperty("validator", property.getValidator());
-                propertyText.putClientProperty("default", property.getDefaultValue());
-                propertyText.putClientProperty("key", prefKey);
-                propertyText.setToolTipText(property.getDescription());
-                FileChooserDescriptor fileChooserDescriptor = new FileChooserDescriptor(false, true, false,
-                        false, false, false);
-                String textVal = conService.getValue(prefKey);
-                if (textVal == null) {
-                    propertyText.setText("");
-                    conService.putValue(prefKey, "");
-                } else {
-                    propertyText.setText(textVal);
-                }
-                //noinspection DialogTitleCapitalization
-                propertyText.addBrowseFolderListener("", "SDK Path", null, fileChooserDescriptor, TextComponentAccessor.TEXT_FIELD_WHOLE_TEXT);
-                panel.add(propertyText, cc.xyw(3, i, 2));
-            } else if (property.getName().equals("PRIVATEKEY")) {
+            if (property.getName().equals("PRIVATEKEY")) {
                 TextFieldWithBrowseButton privatekey = new TextFieldWithBrowseButton();
                 privatekey.putClientProperty("validator", property.getValidator());
                 privatekey.putClientProperty("default", property.getDefaultValue());
@@ -313,6 +319,11 @@ public class ConnectionDetailsGUI {
                 }
             } else {
                 JTextField propertyText = new JTextField();
+
+                if (useConfigFile && (name.equals("USE_CONFIG_FILE") || name.equals("Cloud" +
+                    "/endpoint"))) {
+                    propertyText.setEditable(Boolean.FALSE);
+                }
                 String textVal = conService.getValue(prefKey);
                 if (textVal == null) {
                     propertyText.setText("");
@@ -352,9 +363,15 @@ public class ConnectionDetailsGUI {
         for (Component component : parentComp.getComponents()) {
             if (component instanceof JTextField) {
                 JTextField propertyText = (JTextField) component;
-                if (propertyText.getClientProperty("ToolTipText").equals("Service URL") || propertyText.getClientProperty("ToolTipText").equals("Proxy URL") || propertyText.getClientProperty("ToolTipText").equals("Data Region endpoint")) {
+                if (propertyText.getClientProperty("ToolTipText").equals("Service URL") ||
+                    propertyText.getClientProperty("ToolTipText").equals("Proxy URL") ||
+                    propertyText.getClientProperty("ToolTipText").equals(
+                        "Data Region endpoint") || propertyText.getClientProperty("ToolTipText").equals("OCI Configuration file")) {
                     connectionURL = propertyText.getText();
                     profileType = profileTypeMap.get(propertyText.getClientProperty("ToolTipText").toString());
+                }
+                if(propertyText.getClientProperty("ToolTipText").equals("Configuration Profile")) {
+                    connectionURL += " : " + propertyText.getText();
                 }
                 if (propertyText.getClientProperty("ToolTipText").equals("Connection Name"))
                     connectionName = propertyText.getText();
