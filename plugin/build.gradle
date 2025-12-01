@@ -1,71 +1,53 @@
-/*
-* Copyright (C) 2019, 2024 Oracle and/or its affiliates.
-*
-* Licensed under the Universal Permissive License v 1.0 as shown at
-* https://oss.oracle.com/licenses/upl/
-*/
-
 plugins {
     id("java")
-    id("org.jetbrains.intellij") version "1.17.3"
+    id("org.jetbrains.intellij.platform") version "2.10.5"
 }
 
-group = 'oracle.nosql'
+group = "oracle.nosql"
 version = pluginVersion
 
-
 repositories {
-    mavenLocal()
     mavenCentral()
+
+    intellijPlatform {
+        defaultRepositories()
+    }
 }
 
 dependencies {
-    //testCompile group: 'junit', name: 'junit', version: '4.12'
-    implementation project(':model')
-    implementation('com.oracle.nosql.sdk:nosqldriver:5.4.17')
-    implementation('com.fifesoft:rsyntaxtextarea:3.5.1')
-    implementation('org.json:json:20240303')
-    implementation('com.google.code.gson:gson:2.10.1')
+    // ⭐️ FINAL FIX: Target the major marketing version ⭐️
+    intellijPlatform {
+        intellijIdea(ideVersion)
+        bundledPlugin("com.intellij.java")
+    }
+
+    implementation(project(":model"))
+    implementation("com.oracle.nosql.sdk:nosqldriver:5.4.18")
+    implementation("com.fifesoft:rsyntaxtextarea:3.5.1")
+    implementation("org.json:json:20240303")
+    implementation("com.google.code.gson:gson:2.10.1")
 }
 
+intellijPlatform {
+    pluginConfiguration {
+        name = jarName
+        version = pluginVersion
 
-intellij {
-    pluginName.set(jarName)
-    version.set(ideVersion)
-    plugins.set(['java'])
-    updateSinceUntilBuild.set(false)
-}
-patchPluginXml {
-    version.set(pluginVersion)
-    sinceBuild.set('242.23726.103')
-    changeNotes = """
-        <p><b>The current version is 1.5.3. The following features have been added since version 1.5.1 :</b></p>
-        <ul>
-            <li>Download row into a JSON file.</li>
-            <li>Download query results into JSON files.</li>
-            <li>Create JSON Index.</li>
-            <li>Create Index using DDL.</li>
-            <li>View Table DDL.</li>
-            <li>Support for complex data types such as Array, Maps, Records, and JSON.</li>
-            <li>Command History.</li>
-            <li>Support for Binary and Fixed Binary.</li>
-            <li>Full Schema renderer for Map, Array, Record, Binary, Fixed Binary, and Index in the NoSQL tool window tree.</li>
-            <li>Creation of child tables.</li>
-            <li>Adding cloud connection using a config file.</li>
-            <li>Multiple connection support for Cloud, On-prem, and CloudSim.</li>
-            <li>Global Active Tables support for Cloud.</li>
-            <li>Multi-region table support for On-prem.</li>
-            <li>Execute system requests for On-prem connections.</li>
-            <li>Edit reserved capacity of cloud tables.</li>
-            <li>Added namespace support for On-prem connections.</li>
-            <li>Column and SQL auto-completion.</li>
-            <li>Syntax highlighting.</li>
-            <li>Pretty printing SQL.</li>
-            <li>Result navigation, including JSON path exploration.</li>
-            <li>Support for JSON Collection Tables.</li>
-            <li>Support for MR Counters.</li>
-            <li>Added "View Index DDL" feature.</li>
-            <li>Support for composite primary keys.</li>
-        </ul>
-    """
+        ideaVersion {
+            // Keep the specific build number here to restrict plugin compatibility
+            sinceBuild = "242.23726.103"
+            untilBuild = null
+        }
+
+        changeNotes = """
+            <p><b>The current version is 1.5.4. The following features are 
+            added in this release :</b></p>
+            <ul>
+                <li> Added session token based authentication for Cloud </li>
+                <li> Removed manually setting up SDK path </li>
+                <li> Improved Update Row - Advanced DDL input </li>
+                <li> Fixed JSON formatter issue </li>
+            </ul>
+        """
+    }
 }

@@ -11,12 +11,12 @@ repositories {
 }
 
 dependencies {
-    implementation('com.oracle.nosql.sdk:nosqldriver:5.4.17')
+    implementation('com.oracle.nosql.sdk:nosqldriver:5.4.18')
     testImplementation 'junit:junit:4.13.2'
     implementation 'org.jetbrains:annotations:26.0.2'
 }
 
 tasks.register('wrapper', Wrapper) {
-    gradleVersion = '8.12'
+    gradleVersion = '8.14.2'
 }
 tasks.register("prepareKotlinBuildScriptModel"){}
