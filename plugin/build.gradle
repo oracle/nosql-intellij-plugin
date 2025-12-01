@@ -36,7 +36,7 @@ intellijPlatform {
 
         ideaVersion {
             // Keep the specific build number here to restrict plugin compatibility
-            sinceBuild = "251.*"
+            sinceBuild = "251.29188.11"
             untilBuild = null
         }
 
