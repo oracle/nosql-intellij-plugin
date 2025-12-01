@@ -2,16 +2,12 @@ This THIRD_PARTY_LICENSES.txt file contains the licenses and notices that are re
 
 Copyright Notices
 
-nosql.model.common
-Copyright (c) 2020, 2024 Oracle and/or its affiliates. 
-License: UPL
-
-nosql.model.cloud
-Copyright (c) 2020, 2024 Oracle and/or its affiliates. 
+nosql.model
+Copyright (c) 2020, 2024 Oracle and/or its affiliates.
 License: UPL
 
 nosql.sdk:nosqldriver
-Copyright (c) 2016, 2024 Oracle and/or its affiliates. 
+Copyright (c) 2016, 2025 Oracle and/or its affiliates.
 License: UPL
 
 org.json:JSON
