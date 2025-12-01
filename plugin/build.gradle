@@ -19,6 +19,7 @@ dependencies {
     intellijPlatform {
         intellijIdea(ideVersion)
         bundledPlugin("com.intellij.java")
+        bundledPlugin("com.intellij.modules.json")
     }
 
     implementation(project(":model"))
@@ -35,7 +36,7 @@ intellijPlatform {
 
         ideaVersion {
             // Keep the specific build number here to restrict plugin compatibility
-            sinceBuild = "242.23726.103"
+            sinceBuild = "251.*"
             untilBuild = null
         }
 

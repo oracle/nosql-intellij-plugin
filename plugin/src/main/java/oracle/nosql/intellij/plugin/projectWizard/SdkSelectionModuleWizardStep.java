@@ -35,7 +35,8 @@ public class SdkSelectionModuleWizardStep extends ModuleWizardStep {
         myBuilder= builder;
         FileChooserDescriptor fileChooserDescriptor = new FileChooserDescriptor(false, true, false,
                 false, false, false);
-        sdkTextField.addBrowseFolderListener("", "SDK Path", null, fileChooserDescriptor, TextComponentAccessor.TEXT_FIELD_WHOLE_TEXT);
+        sdkTextField.addBrowseFolderListener(null,fileChooserDescriptor,
+            TextComponentAccessor.TEXT_FIELD_WHOLE_TEXT);
     }
 
     @Override
