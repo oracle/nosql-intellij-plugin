@@ -134,7 +134,7 @@ public abstract class AbstractInmemorySchemaBuilder extends
      * @param node  a JSON node. Must have 'fields' property.
      * @param index an index whose attributes to be populated.
      */
-    private void parse(MapValue node, Index index,Table table) {
+    private void parse(MapValue node, Index index, Table table) {
         assertArrayProperty(node, "fields");
         if (index == null) {
             throw new IllegalArgumentException("can not populate null index");
@@ -146,21 +146,72 @@ public abstract class AbstractInmemorySchemaBuilder extends
         //Implemented this functionality to implement detailed schema of field type
         node.get("fields").asArray().forEach(fieldNode -> {
             Field field = null;
-            String fieldName = fieldNode.getString();
+            String fieldName = null;
+            String explicitType = null;
+            boolean isFunction = false;
+            try {
+                if (fieldNode.isString()) {
+                    fieldName = fieldNode.getString();
+                } else {
+                    MapValue fv = fieldNode.asMap();
+                    if (fv.get("path") != null) {
+                        fieldName = fv.getString("path");
+                    } else if (fv.get("function") != null) {
+                        isFunction = true;
+                        String func = fv.getString("function");
+                        String args = "";
+                        if (fv.get("arguments") != null) {
+                            FieldValue argVal = fv.get("arguments");
+                            if (argVal.isArray()) {
+                                StringBuilder sb = new StringBuilder();
+                                argVal.asArray().forEach(a -> {
+                                    if (!sb.isEmpty()) sb.append(",");
+                                    sb.append(a.getString());
+                                });
+                                args = sb.toString();
+                            } else {
+                                args = argVal.getString();
+                            }
+                        }
+                        fieldName = func + "(" + args + ")";
+                    } else {
+                        throw new IllegalArgumentException(
+                                "Unknown index field object (expected 'path' or 'function'): " + fv);
+                    }
+                    if (fv.get("type") != null) {
+                        explicitType = fv.getString("type");
+                    }
+                }
+            } catch (RuntimeException rte) {
+                throw new IllegalArgumentException("Failed to parse index field node: " + fieldNode, rte);
+            }
+
             if (table.hasField(fieldName)) {
                 Field fieldOriginal = index.getTable().getField(fieldName);
                 field = newField(fieldOriginal.getName() + "|index");
                 field.setType(fieldOriginal.getType());
                 table.addField(field, false);
                 table.removeChild(field.getName());
+            } else {
+                // field not present in table: create one for the index
+                if (!isFunction) {
+                    fieldName += "|index.path";
+                }
+                field = newField(fieldName);
+                if (explicitType != null) {
+                    field.setIndexType(explicitType.toUpperCase());
+                }
+                table.addField(field, false);
+                table.removeChild(fieldName);
             }
-              else {
-                  field = newField(fieldName);
-                  table.addField(field,false);
-                  table.removeChild(fieldName);
-              }
             index.addField(field);
         });
+        if (node.get("withNoNulls").asBoolean().getBoolean()) {
+            index.setNoNulls(true);
+        }
+        if (node.get("withUniqueKeysPerRow").asBoolean().getBoolean()) {
+            index.setUniqueKeysPerRow(true);
+        }
     }
 
     /**

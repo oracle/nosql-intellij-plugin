@@ -40,7 +40,7 @@ import java.util.Objects;
 class FieldGroupNodeContextMenuActionGroup extends DefaultActionGroup {
     public FieldGroupNodeContextMenuActionGroup(FieldGroup field) {
         add(new DropIndexAction(field));
-        add(new ViewIndexDdlAction(field));
+        add(new ViewIndexDdlAction((Index)field));
     }
 
     @SuppressWarnings({"WeakerAccess", "HardCodedStringLiteral"})
@@ -116,9 +116,9 @@ class FieldGroupNodeContextMenuActionGroup extends DefaultActionGroup {
     @SuppressWarnings({"WeakerAccess", "HardCodedStringLiteral"})
     private static class ViewIndexDdlAction extends AnAction {
         private static final String INDEX_DDL = "View Index DDL";
-        private final FieldGroup field;
+        private final Index field;
 
-        public ViewIndexDdlAction(FieldGroup field) {
+        public ViewIndexDdlAction(Index field) {
             super(INDEX_DDL);
             this.field = field;
         }
@@ -128,25 +128,8 @@ class FieldGroupNodeContextMenuActionGroup extends DefaultActionGroup {
             ProgressManager.getInstance().run(new Task.Backgroundable(e.getProject(), "Fetching index ddl", false) {
                 @Override
                 public void run(@NotNull ProgressIndicator indicator) {
-                    IConnection con;
                     try{
-                        con = DBProject.getInstance(Objects.requireNonNull(e.getProject())).getConnection();
-                        String indexName = field.getName();
-                        String[] indexFields = con.getIndexFields(field.getTable(), indexName);
-
-                        StringBuilder indexDdl = new StringBuilder();
-                        indexDdl.append("CREATE INDEX IF NOT EXISTS ").
-                                append(indexName).
-                                append(" ON ").append(field.getTable().getName()).append("(");
-
-                        for(String field : indexFields){
-                            indexDdl.append(field).append(", ");
-                        }
-
-                        indexDdl.setLength(indexDdl.length()-2);
-                        indexDdl.append(");");
-                        String indexDdlStr = indexDdl.toString().trim();
-
+                        String indexDdl = field.getCreateDDL();
                         //Frame which will display the index DDL
                         SwingUtilities.invokeLater(() -> {
                             JFrame frame = new JFrame();
@@ -154,13 +137,13 @@ class FieldGroupNodeContextMenuActionGroup extends DefaultActionGroup {
                             frame.setSize(500, 300);
                             frame.setLayout(new BorderLayout());
 
-                            JTextArea textArea = new JTextArea(indexDdlStr);
+                            JTextArea textArea = new JTextArea(indexDdl);
                             textArea.setWrapStyleWord(true);
                             textArea.setLineWrap(true);
                             textArea.setEditable(false);
                             JScrollPane scrollPane = new JScrollPane(textArea);
 
-                            JPanel buttonPanel = getButtonPanel(frame, indexDdlStr);
+                            JPanel buttonPanel = getButtonPanel(frame, indexDdl);
                             frame.add(scrollPane, BorderLayout.CENTER);
                             frame.add(buttonPanel, BorderLayout.SOUTH);
                             frame.setVisible(true);

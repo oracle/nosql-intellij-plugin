@@ -56,6 +56,19 @@ public interface Field extends SchemaElement<Table> {
     public Field setType(Field.Type type);
 
     /**
+     * @return type of index field.
+     */
+    public String getIndexType();
+
+    /**
+     * Sets the index field type.
+     *
+     * @param indexType - index field type
+     * @return Field instance for chaining the functions.
+     */
+    public Field setIndexType(String indexType);
+
+    /**
      * @return true if the field is nullable, otherwise false.
      */
     public boolean isNullable();
