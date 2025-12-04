@@ -12,13 +12,17 @@ import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionPopupMenu;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.table.JBTable;
+import oracle.nosql.intellij.plugin.common.DBProject;
+import oracle.nosql.model.connection.IConnection;
 import oracle.nosql.model.schema.Field;
 import oracle.nosql.model.schema.Table;
+import org.json.JSONObject;
 
 import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -47,7 +51,12 @@ class DatabaseTable extends JBTable {
                     String bin = jTable.getColumnName(jTable.columnAtPoint(e.getPoint()));
                     boolean binField = isBinField(table, bin);
                     if (!binField) {
-                        Field.Type valueType = table.getField(bin).getType();
+                        Field.Type valueType;
+                        if (isJsonCollection(project, table) && bin.equals("Rowdata")) {
+                            valueType = Field.Type.JSON;
+                        } else {
+                            valueType = table.getField(bin).getType();
+                        }
                         DatabaseTableCellDialog dialog = new DatabaseTableCellDialog(project, valueInCell, valueType);
                         dialog.show();
                     }
@@ -94,6 +103,17 @@ class DatabaseTable extends JBTable {
                 if (binSet.contains(bin))
                     binField = true;
                 return binField;
+            }
+
+            private boolean isJsonCollection(Project project, Table table) {
+                try {
+                    IConnection connection = DBProject.getInstance(Objects.requireNonNull(project)).getConnection();
+                    String schema = connection.showSchema(table);
+                    JSONObject schemaJson = new JSONObject(schema);
+                    return schemaJson.has("jsonCollection");
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
     }
