@@ -81,7 +81,13 @@ class DatabaseBrowserTreeCellRenderer extends ColoredTreeCellRenderer {
                     map = schemaParser.getFieldNameToTypeMap();
                     fieldNameToTypeMap.put(field.getTable(), map);
                 }
-                if (field.getName().indexOf("|index") > 0) {
+                if (field.getName().indexOf("|index.path") > 0) {
+                    String fieldName = field.getName().substring(0, field.getName().indexOf("|"));
+                    if (field.getIndexType() != null) {
+                        fieldName += ":" + field.getIndexType();
+                    }
+                    append(fieldName, SimpleTextAttributes.REGULAR_ATTRIBUTES);
+                } else if (field.getName().indexOf("|index") > 0) {
                     String name = field.getName().substring(0, field.getName().indexOf("|"));
                     append(name, SimpleTextAttributes.REGULAR_ATTRIBUTES);
                 } else if (map.get(field.getName()) != null)

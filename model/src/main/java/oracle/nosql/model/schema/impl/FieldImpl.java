@@ -27,6 +27,7 @@ public class FieldImpl extends AbstractSchemaElement<Table> implements Field {
     private boolean nullable;
     private boolean isDefault;
     private String defaultValue, syntax, size;
+    private String indexType;
 
     public FieldImpl(String name) {
         super(name);
@@ -56,6 +57,11 @@ public class FieldImpl extends AbstractSchemaElement<Table> implements Field {
     }
 
     @Override
+    public String getIndexType() {
+        return indexType;
+    }
+
+    @Override
     public boolean isNullable() {
         return nullable;
     }
@@ -68,6 +74,12 @@ public class FieldImpl extends AbstractSchemaElement<Table> implements Field {
     @Override
     public Field setType(Field.Type type) {
         this.type = type;
+        return this;
+    }
+
+    @Override
+    public Field setIndexType(String indexType) {
+        this.indexType = indexType;
         return this;
     }
 

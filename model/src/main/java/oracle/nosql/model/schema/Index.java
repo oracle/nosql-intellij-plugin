@@ -50,6 +50,20 @@ public interface Index extends FieldGroup, Named {
     public Field addField(Field field);
 
     /**
+     * Adds the given field to this index.
+     *
+     * @return a field. must not be null.
+     */
+    public void setNoNulls(boolean nonNull);
+
+    /**
+     * Adds the given field to this index.
+     *
+     * @return a field. must not be null.
+     */
+    public void setUniqueKeysPerRow(boolean withUniqueKeysPerRow);
+
+    /**
      * Gets the DDL to create this index.
      * 
      * @return a DDL string.
