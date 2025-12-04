@@ -52,6 +52,7 @@ The IntelliJ Plugin provides the following capabilities:
 ### Multi-Region and Cloud Features
 
 - Add Cloud connections using configuration file
+- Add Cloud connection using [OCI session tokens](https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/clitoken.htm)
 - Add multiple Cloud, On-prem and Cloudsim connections
 - Use Global Active Tables for Cloud
 - Use Multi-region tables for On-prem
@@ -64,9 +65,9 @@ Refer to the [Oracle NoSQL IntelliJ Plugin installation guide](https://docs.orac
 
 ### Prerequisites
 
-- IntelliJ IDEA Build '242.23726.103'
-- Oracle NoSQL Java SDK '5.4.17' or later ([Download here](https://github.com/oracle/nosql-java-sdk)).
-- Gradle version 8.12
+- IntelliJ IDEA Build '251.29188.11' or later
+- Oracle NoSQL Java SDK '5.4.18' or later ([Download here](https://github.com/oracle/nosql-java-sdk)).
+- Gradle version 8.14.2 or later
 - Java 17
 
 ## Getting Started
@@ -281,7 +282,7 @@ Once you connect to your database -
 ## Building the repository
 
 - Build the complete package with `gradle build` or clean and build with `./gradlew clean build`
-- The above build will generate the plugin zip in 'plugin/build/distributions/'
+- Build the plugin distribution zip with `gradle buildPlugin`'. The build will generate the plugin zip in 'plugin/build/distributions/'
 
 
 ### Contributing

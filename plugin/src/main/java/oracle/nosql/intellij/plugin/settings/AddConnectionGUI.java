@@ -133,7 +133,7 @@ public class AddConnectionGUI {
                 } else {
                     privatekey.setText(textVal);
                 }
-                privatekey.addBrowseFolderListener("", "Private key path", null, fileChooserDescriptor, TextComponentAccessor.TEXT_FIELD_WHOLE_TEXT);
+                privatekey.addBrowseFolderListener(project,fileChooserDescriptor,TextComponentAccessor.TEXT_FIELD_WHOLE_TEXT);
                 panel.add(privatekey, cc.xyw(3, i, 2));
             } else if (property.getName().equals("PASSPHRASE")) {
                 JPasswordField passphrase = new JPasswordField();
@@ -278,7 +278,7 @@ public class AddConnectionGUI {
                             trustStore.putClientProperty("default", optProperty.getDefaultValue());
                             trustStore.putClientProperty("key", trustStorePrefKey);
                             trustStore.setToolTipText(optProperty.getDescription());
-                            trustStore.addBrowseFolderListener("", "Trust store file", null, fileChooserDescriptor, TextComponentAccessor.TEXT_FIELD_WHOLE_TEXT);
+                            trustStore.addBrowseFolderListener(project,fileChooserDescriptor,TextComponentAccessor.TEXT_FIELD_WHOLE_TEXT);
                             panel.add(trustStore, cc.xyw(3, i + 6, 1));
 
                             if (Objects.equals(secComBox.getSelectedItem(), dropdownList[0])) {

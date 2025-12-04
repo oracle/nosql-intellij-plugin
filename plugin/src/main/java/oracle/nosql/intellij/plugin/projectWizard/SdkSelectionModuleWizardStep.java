@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2019, 2024 Oracle and/or its affiliates.
+* Copyright (C) 2019, 2025 Oracle and/or its affiliates.
 *
 * Licensed under the Universal Permissive License v 1.0 as shown at
 * https://oss.oracle.com/licenses/upl/
@@ -35,7 +35,8 @@ public class SdkSelectionModuleWizardStep extends ModuleWizardStep {
         myBuilder= builder;
         FileChooserDescriptor fileChooserDescriptor = new FileChooserDescriptor(false, true, false,
                 false, false, false);
-        sdkTextField.addBrowseFolderListener("", "SDK Path", null, fileChooserDescriptor, TextComponentAccessor.TEXT_FIELD_WHOLE_TEXT);
+        sdkTextField.addBrowseFolderListener(null,fileChooserDescriptor,
+            TextComponentAccessor.TEXT_FIELD_WHOLE_TEXT);
     }
 
     @Override

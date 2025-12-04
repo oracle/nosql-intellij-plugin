@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2019, 2024 Oracle and/or its affiliates.
+* Copyright (C) 2019, 2025 Oracle and/or its affiliates.
 *
 * Licensed under the Universal Permissive License v 1.0 as shown at
 * https://oss.oracle.com/licenses/upl/
@@ -28,8 +28,10 @@ import javax.swing.JComponent;
 class GeneralSettings implements Configurable, Disposable {
     private final ConnectionDataProviderService mService;
     private GeneralSettingsGUI mGUI;
+    private Project project;
 
     public GeneralSettings(Project project) {
+        this.project = project;
         mService = ConnectionDataProviderService.getInstance(project);
     }
 
@@ -59,7 +61,7 @@ class GeneralSettings implements Configurable, Disposable {
     @Override
     public JComponent createComponent() {
         mGUI = new GeneralSettingsGUI();
-        return mGUI.getComponent(mService);
+        return mGUI.getComponent(project, mService);
     }
 
     @Override

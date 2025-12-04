@@ -31,4 +31,5 @@ plugin/build
 /out/
 /build/
 .gradle/
+.intellijPlatform/
 

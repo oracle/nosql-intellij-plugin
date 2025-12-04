@@ -76,7 +76,7 @@ public class CloudConfigFileGUI {
         configfield.setName("Config Path");
         FileChooserDescriptor fileChooserDescriptor = new FileChooserDescriptor(true, true, false, false, false, false);
         JLabel configLabel = new JLabel("Configuration File *");
-        configfield.addBrowseFolderListener("", "Configuration File", null, fileChooserDescriptor, TextComponentAccessor.TEXT_FIELD_WHOLE_TEXT);
+        configfield.addBrowseFolderListener(project,fileChooserDescriptor,TextComponentAccessor.TEXT_FIELD_WHOLE_TEXT);
         panel.add(configLabel, cc.xy(1, i + 4, CellConstraints.LEFT,
             CellConstraints.FILL));
         panel.add(configfield, cc.xy(3, i + 4, CellConstraints.FILL,
