@@ -5,6 +5,7 @@ plugins {
 group = 'oracle.nosql'
 subprojects {
     apply plugin: 'java'
+    apply plugin: 'distribution'
 
     java {
         sourceCompatibility = JavaVersion.VERSION_17

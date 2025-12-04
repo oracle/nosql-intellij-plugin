@@ -15,7 +15,6 @@ repositories {
 }
 
 dependencies {
-    // ⭐️ FINAL FIX: Target the major marketing version ⭐️
     intellijPlatform {
         intellijIdea(ideVersion)
         bundledPlugin("com.intellij.java")
@@ -33,7 +32,11 @@ intellijPlatform {
     pluginConfiguration {
         name = jarName
         version = pluginVersion
+    }
+}
 
+intellijPlatform {
+    pluginConfiguration {
         ideaVersion {
             // Keep the specific build number here to restrict plugin compatibility
             sinceBuild = "251.29188.11"
