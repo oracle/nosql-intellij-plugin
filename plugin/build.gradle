@@ -23,9 +23,9 @@ dependencies {
 
     implementation(project(":model"))
     implementation("com.oracle.nosql.sdk:nosqldriver:5.4.18")
-    implementation("com.fifesoft:rsyntaxtextarea:3.5.1")
-    implementation("org.json:json:20240303")
-    implementation("com.google.code.gson:gson:2.10.1")
+    implementation("com.fifesoft:rsyntaxtextarea:3.6.0")
+    implementation("org.json:json:20250517")
+    implementation("com.google.code.gson:gson:2.11.0")
 }
 
 intellijPlatform {
