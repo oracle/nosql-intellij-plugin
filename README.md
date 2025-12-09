@@ -61,13 +61,12 @@ The IntelliJ Plugin provides the following capabilities:
 
 ## Installation
 
-Refer to the [Oracle NoSQL IntelliJ Plugin installation guide](https://docs.oracle.com/en/database/other-databases/nosql-database/24.4/plugins/setting-intellij-plug.html#GUID-D4D4DF59-2B59-4404-8461-C9EB0A6BA68B)
+Refer to the [Oracle NoSQL IntelliJ Plugin installation guide](https://docs.oracle.com/en/database/other-databases/nosql-database/25.3/plugins/setting-intellij-plug.html)
 
 ### Prerequisites
 
-- IntelliJ IDEA Build '251.29188.11' or later
-- Oracle NoSQL Java SDK '5.4.18' or later ([Download here](https://github.com/oracle/nosql-java-sdk)).
-- Gradle version 8.14.2 or later
+- IntelliJ IDEA Version 2025.1.7 (Build `251.29188.11`) or later
+- Gradle version `8.14.2` or later
 - Java 17
 
 ## Getting Started
@@ -75,9 +74,10 @@ Refer to the [Oracle NoSQL IntelliJ Plugin installation guide](https://docs.orac
 ### Connect to Your Database
 
 - On-Prem  :
-  1. Deploy a Oracle NoSQL on-premises store [Install and configure Oracle NoSQL Database](https://docs.oracle.com/en/database/other-databases/nosql-database/24.4/admin/install-and-upgrade.html)
-  2. Configure the [Oracle NoSQL Database Proxy](https://docs.oracle.com/en/database/other-databases/nosql-database/24.4/admin/proxy.html)
-  3. [Connect to Oracle NoSQL Database On-premises server](https://docs.oracle.com/en/database/other-databases/nosql-database/24.4/plugins/connecting-oracle-nosqldatabase-intellij.html#GUID-DACD40CB-A57C-4336-8879-7252EFA645C2)
+  1. Deploy a Oracle NoSQL on-premises store [Install and configure Oracle NoSQL Database](https://docs.oracle.com/en/database/other-databases/nosql-database/25.3/admin/install-and-upgrade.html)
+  2. Configure the [Oracle NoSQL Database Proxy](https://docs.oracle.com/en/database/other-databases/nosql-database/25.3/admin/proxy.html)
+  3. [Connect to Oracle NoSQL Database On-premises server](https://docs.oracle.com/en/database/other-databases/nosql-database/25.3/plugins/connecting-oracle-nosqldatabase-intellij.html#GUID-DACD40CB-A57C-4336-8879-7252EFA645C2)
+  4. [Quick Start with KVLite in a Container](https://docs.oracle.com/en/database/other-databases/nosql-database/25.3/kvlite/quick-start-kvlite-container.html)
 
 - Cloud    : [Connect to Oracle NoSQL Cloud Service](https://docs.oracle.com/en/cloud/paas/nosql-cloud/yooud/#GUID-8DB8A86D-5DEB-4E02-941B-9636A81650B3:~:text=Service%20or%20simulator.-,Connecting%20to%20Oracle%20NoSQL%20Database%20Cloud%20Service%20from%20IntelliJ,-Learn%20how%20to)
 
@@ -184,7 +184,7 @@ Once you connect to your database -
 ### Multi-Region Tables for On-prem
 
 1. Set up the multiple kvstore and proxy.
-2. [Set up the Multi-region environment](https://docs.oracle.com/en/database/other-databases/nosql-database/24.4/admin/use-case-1-set-multi-region-environment.html)
+2. [Set up the Multi-region environment](https://docs.oracle.com/en/database/other-databases/nosql-database/25.3/admin/use-case-1-set-multi-region-environment.html)
 3. Use the plugin to create and manage the table and regions.
 4. The above task can be achieved by **Execute DDL** option present in the NoSQL tool window.
 
@@ -194,10 +194,10 @@ Once you connect to your database -
 
 - Examples of statements used in this object include:
 
-  - CREATE NAMESPACE mynamespace
-  - CREATE USER some_user IDENTIFIED BY password
-  - CREATE ROLE some_role
-  - GRANT ROLE some_role TO USER some_user
+  - `CREATE NAMESPACE mynamespace`
+  - `CREATE USER some_user IDENTIFIED BY password`
+  - `CREATE ROLE some_role`
+  - `GRANT ROLE some_role TO USER some_user`
 
 - This request can be executed by using the **Execute DDL** option present in the NoSQL tool window.
 
@@ -209,7 +209,7 @@ Once you connect to your database -
 
 - The namespace support is now available in the plugin.
 - The namespaces can be created from the **Execute DDL** option present in the NoSQL tool window.
-  More information on namespace :  [Oracle NoSQL Database Namespaces](https://docs.oracle.com/en/database/other-databases/nosql-database/24.4/java-driver-table/introducing-namespaces.html)
+  More information on namespace :  [Oracle NoSQL Database Namespaces](https://docs.oracle.com/en/database/other-databases/nosql-database/25.3/java-driver-table/introducing-namespaces.html)
 - While adding an On-prem connection, enter a namespace in the Namespace field.
 - Fill the created namespace to set up a connection to a particular namespace under particular kvstore connection.
 - Once connected to this connection, it will list all the tables under that namespace.
@@ -298,7 +298,7 @@ Please consult the [security guide](./SECURITY.md) for our responsible security 
 There are a few ways to get help or report issues:
 
 - Refer to [Oracle NoSQL Cloud Plugin Documentation](https://docs.oracle.com/en/cloud/paas/nosql-cloud/yooud/#articletitle)
-- Refer to [Oracle NoSQL On-Premises Documentation](https://docs.oracle.com/en/database/other-databases/nosql-database/24.4/plugins/intellij-plugin.html)
+- Refer to [Oracle NoSQL On-Premises Documentation](https://docs.oracle.com/en/database/other-databases/nosql-database/25.3/plugins/intellij-plugin.html)
 - Post your question on the [Oracle NoSQL Database Community](https://forums.oracle.com/ords/apexds/domain/dev-community/category/nosql_database)
 - [Email support](mailto:oraclenosql-info_ww@oracle.com)
 
