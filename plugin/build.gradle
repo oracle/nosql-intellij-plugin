@@ -33,6 +33,14 @@ intellijPlatform {
         name = jarName
         version = pluginVersion
     }
+
+    pluginVerification {
+        freeArgs = ["-mute", "TemplateWordInPluginId"]
+
+        ides {
+            ide("IU-${ideVersion}")
+        }
+    }
 }
 
 intellijPlatform {
