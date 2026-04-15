@@ -52,13 +52,87 @@ intellijPlatform {
         }
 
         changeNotes = """
-            <p><b>The current version is 1.5.4. The following features are 
-            added in this release :</b></p>
+            <p><b>The current version is 1.5.5. The following features has been 
+            added since 1.4.0 :</b></p>
             <ul>
-                <li> Added session token based authentication for Cloud </li>
-                <li> Removed manually setting up SDK path </li>
-                <li> Improved Update Row - Advanced DDL input </li>
-                <li> Fixed JSON formatter issue </li>
+                <li>
+                    <p>Download query results into a JSON file</p>
+                </li>
+                <li>
+                    <p>View a table's DDL statement</p>
+                </li>
+                <li>
+                    <p>Work with complex data types such as Arrays, Maps and Records</p>
+                </li>
+                <li>
+                    <p>Work with binary and fixed binary data types</p>
+                </li>
+                <li>
+                    <p>View and use the previously executed SQL queries with command history</p>
+                </li>
+                <li>
+                    <p>Create child tables</p>
+                </li>
+                <li>
+                    <p>Full schema renderer for the Map, Array, Record, Binary, Fixed Binary and Index in the NoSQL tool window tree</p>
+                </li>
+                <li>
+                    <p>Add cloud connection using configuration file</p>
+                </li>
+                <li>
+                    <p>Multiple connections support for Cloud, On-prem and Cloudsim</p>
+                </li>
+                <li>
+                    <p>Global Active Tables support for Cloud</p>
+                </li>
+                <li>
+                    <p>Multi-region table support for On-prem</p>
+                </li>
+                <li>
+                    <p>Execute System Requests for the On-prem connections</p>
+                </li>
+                <li>
+                    <p>Edit reserved capacity of the cloud tables</p>
+                </li>
+                <li>
+                    <p>Namespace support for On-prem connections</p>
+                </li>
+                <li>
+                    <p>Column and SQL auto-completion in query workbench</p>
+                </li>
+                <li>
+                    <p>Syntax highlighted SQL to reduce errors</p>
+                </li>
+                <li>
+                    <p>Prettify SQL with a single-click</p>
+                </li>
+                <li>
+                    <p>Better JSON result navigation</p>
+                </li>
+                <li>
+                    <p>Calculate JE cache size, storage size and number of shards based on table's metedata</p>
+                </li>
+                <li>
+                    <p>Support for JSON Collection Tables</p>
+                </li>
+                <li>
+                    <p>Support for MR Counters</p>
+                </li>
+                <li>
+                    <p>View a Index's DDL statement</p>
+                </li>
+                <li>
+                    <p>Support for composite primary keys</p>
+                </li>
+                <li>
+                    <p>Session-token-based authentication for Cloud connections</p>
+                </li>
+                <li> 
+                    <p>Removed manually setting up SDK path</p> 
+                </li>
+                <li> 
+                    <p>Fixed deprecated APIs and improved IntelliJ compatibility</p> 
+                </li>
             </ul>
         """
     }
