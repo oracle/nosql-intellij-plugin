@@ -111,6 +111,21 @@
                 <li>
                     <p>Calculate JE cache size, storage size and number of shards based on table's metedata</p>
                 </li>
+                <li>
+                    <p>Support for JSON Collection Tables</p>
+                </li>
+                <li>
+                    <p>Support for MR Counters</p>
+                </li>
+                <li>
+                    <p>View a Index's DDL statement</p>
+                </li>
+                <li>
+                    <p>Support for composite primary keys</p>
+                </li>
+                <li>
+                    <p>Session-token-based authentication for Cloud connections</p>
+                </li>
             <ul>
         ]]>
     </description>
@@ -144,6 +159,7 @@
         <projectService serviceImplementation="oracle.nosql.intellij.plugin.common.MultipleConnectionsDataProviderService"/>
         <projectService serviceImplementation="oracle.nosql.intellij.plugin.common.DatabaseBrowserManager"/>
         <projectService serviceImplementation="oracle.nosql.intellij.plugin.common.DBProject"/>
+        <postStartupActivity implementation="oracle.nosql.intellij.plugin.common.ConfigParserStartupActivity"/>
 
         <!--fileEditorProvider is for creating a  query window form in editor -->
         <fileEditorProvider implementation="oracle.nosql.intellij.plugin.recordView.TableFileEditorProvider"/>
@@ -158,17 +174,6 @@
         category="false"/-->
         <webHelpProvider implementation="oracle.nosql.intellij.plugin.common.MyHelpProvider" id="MyHelpTopic"/>
     </extensions>
-    <project-components>
-        <component>
-            <implementation-class>oracle.nosql.intellij.plugin.common.DBProject</implementation-class>
-        </component>
-        <component>
-            <implementation-class>oracle.nosql.intellij.plugin.common.DatabaseBrowserManager</implementation-class>
-        </component>
-        <component>
-            <implementation-class>oracle.nosql.intellij.plugin.common.ConfigParser</implementation-class>
-        </component>
-    </project-components>
 
     <actions>
         <!--actions in tool window -->
