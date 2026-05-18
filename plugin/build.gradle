@@ -6,6 +6,11 @@ plugins {
 group = "oracle.nosql"
 version = pluginVersion
 
+def pluginZipBaseName = "Oracle-NoSQL-Database-Connector"
+def skipSearchableOptions = providers.gradleProperty("oracle.nosql.skipSearchableOptions")
+        .map { it.toBoolean() }
+        .getOrElse(false)
+
 repositories {
     mavenCentral()
 
@@ -29,22 +34,16 @@ dependencies {
 }
 
 intellijPlatform {
+    // The headless IDE launched by buildSearchableOptions can attempt outbound
+    // JetBrains URL-region lookups and time out in restricted/VPN networks.
+    // Keep searchable options enabled by default, but allow reproducible VPN/CI
+    // builds with: -Poracle.nosql.skipSearchableOptions=true
+    buildSearchableOptions = !skipSearchableOptions
+
     pluginConfiguration {
         name = jarName
         version = pluginVersion
-    }
 
-    pluginVerification {
-        freeArgs = ["-mute", "TemplateWordInPluginId"]
-
-        ides {
-            ide("IU-${ideVersion}")
-        }
-    }
-}
-
-intellijPlatform {
-    pluginConfiguration {
         ideaVersion {
             // Keep the specific build number here to restrict plugin compatibility
             sinceBuild = "251.29188.11"
@@ -136,4 +135,16 @@ intellijPlatform {
             </ul>
         """
     }
+
+    pluginVerification {
+        freeArgs = ["-mute", "TemplateWordInPluginId"]
+
+        ides {
+            ide("IU-${ideVersion}")
+        }
+    }
+}
+
+tasks.named("buildPlugin", Zip) {
+    archiveFileName = "${pluginZipBaseName}-${pluginVersion}.zip"
 }

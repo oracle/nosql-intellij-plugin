@@ -66,7 +66,8 @@ Refer to the [Oracle NoSQL IntelliJ Plugin installation guide](https://docs.orac
 ### Prerequisites
 
 - IntelliJ IDEA Version 2025.1.7 (Build `251.29188.11`) or later
-- Gradle version `8.14.2` or later
+- Gradle `9.3.0` or later. Use the included `./gradlew` wrapper for the
+  supported version.
 - Java 17
 
 ## Getting Started
@@ -281,8 +282,14 @@ Once you connect to your database -
 
 ## Building the repository
 
-- Build the complete package with `gradle build` or clean and build with `./gradlew clean build`
-- Build the plugin distribution zip with `gradle buildPlugin`'. The build will generate the plugin zip in 'plugin/build/distributions/'
+- Build the complete package with `./gradlew clean build`.
+- Build the plugin distribution zip with `./gradlew buildPlugin`. The build generates
+  `plugin/build/distributions/Oracle-NoSQL-Database-Connector-<version>.zip`.
+- If the headless IntelliJ searchable-options task fails in a restricted network or VPN
+  environment, rerun the build with
+  `./gradlew -Poracle.nosql.skipSearchableOptions=true buildPlugin` (or add the same
+  property to `clean build`) to skip `:plugin:buildSearchableOptions` without changing
+  source-controlled Gradle files.
 
 
 ### Contributing

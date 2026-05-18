@@ -22,8 +22,8 @@ tasks.register('buildModel') {
 
 tasks.register('buildPlugin') {
     group = 'intellij'
-    description = 'Builds the IntelliJ plugin with Gradle'
-    dependsOn('buildModel', ':plugin:build')
+    description = 'Builds the IntelliJ plugin distribution with Gradle'
+    dependsOn('buildModel', ':plugin:buildPlugin')
 }
 
 defaultTasks 'buildPlugin'
