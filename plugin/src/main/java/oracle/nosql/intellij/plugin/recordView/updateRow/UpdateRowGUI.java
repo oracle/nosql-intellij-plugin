@@ -53,16 +53,17 @@ public class UpdateRowGUI {
     private JButton updateRowButton;
     private JButton closeButton;
     private JComboBox<String> comboBox1;
-    private static JFrame frame;
+    /* Dialog/action state is instance-scoped so concurrent row updates do not collide. */
+    private JFrame frame;
     private boolean isJsonCollection;
     FormUpdateGUI formUpdateGUI;
     DDLUpdateGUI ddlUpdateGUI;
     private Map<String, Set<String>> mrCounters;
     private String primaryKeys;
     private Set<String> jsonFields;
-    private static Map<String,String>mrCounterType;
-    private static boolean mrCounterUpdateError;
-    private static Project project;
+    private Map<String,String>mrCounterType;
+    private boolean mrCounterUpdateError;
+    private Project project;
     private String schema = null;
     private String jString;
 
@@ -350,7 +351,7 @@ public class UpdateRowGUI {
     }
 
     // validates and append the set statement for incrementing/decrementing the MR Counter
-    private static void setMrCounter(String currentPath, StringBuilder setStatement, String value, String columnName){
+    private void setMrCounter(String currentPath, StringBuilder setStatement, String value, String columnName){
         if(validateMRCounter(columnName, value, currentPath + columnName))
             setStatement.append("t.").append(currentPath).
                     append(columnName).append(" = t.").append(currentPath).
@@ -800,7 +801,7 @@ public class UpdateRowGUI {
     }
 
     // Function to validate the mr counter increment while updating. Format - ( <mrCounter> +/- <value> )
-    private static boolean validateMRCounter(String columnName, String val, String currentPath){
+    private boolean validateMRCounter(String columnName, String val, String currentPath){
         if(val.length() < 3){  // 3 as one for variable name, second for +/- sign and other for numerical value
             setMRCounterError(currentPath);
             return false;
@@ -836,12 +837,12 @@ public class UpdateRowGUI {
         return true;
     }
 
-    private static void setMRCounterError(String counterName){
+    private void setMRCounterError(String counterName){
         String errorMessage = "MR Counter \"" + counterName + "\" can only be incremented or decremented!";
         setNotification("Error executing Update Row : " + errorMessage);
     }
 
-    private static void setNotification(String message) {
+    private void setNotification(String message) {
         Notification notification = new Notification("Oracle NOSQL", "Oracle NoSql explorer", message, NotificationType.ERROR);
         Notifications.Bus.notify(notification, project);
     }

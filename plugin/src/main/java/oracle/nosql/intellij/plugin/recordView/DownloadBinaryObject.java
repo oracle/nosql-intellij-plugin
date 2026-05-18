@@ -41,7 +41,6 @@ public class DownloadBinaryObject {
     private JTable jTable;
     private Project project;
     private Table table;
-    private static byte[] bytes;
 
     public DownloadBinaryObject(JTable jTable, MouseEvent e, Project project, Table table) {
         this.jTable = jTable;
@@ -71,39 +70,32 @@ public class DownloadBinaryObject {
             return;
         }
 
-        ProgressManager.getInstance().run(new Task.Backgroundable(project, "In progress", false) {
-            @Override
-            public void run(@NotNull ProgressIndicator indicator) {
-                IConnection con;
-                try {
-                    con = DBProject.getInstance(project).getConnection();
-                    MapValue result;
-                    try {
-                        result = con.getData(mapValue, table);
-                    }catch (NullPointerException e){
-                        throw new NullPointerException();
-                    } catch (Exception ex) {
-                        throw new RuntimeException();
-                    }
-                    bytes = result.getBinary(binaryColumnName);
-                }catch (NullPointerException e){
-                    throw new NullPointerException();
-                }
-                catch (Exception ex) {
-                    throw new RuntimeException();
-                }
-            }
-        });
         JFileChooser jFileChooser = getjFileChooser(jTable, clickedPoint);
         int returnVal = jFileChooser.showSaveDialog(jFileChooser.getParent());
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File fileSelected = jFileChooser.getSelectedFile();
-            ProgressManager.getInstance().run(new Task.Backgroundable(null, "Downloading binary object", true) {
+            ProgressManager.getInstance().run(new Task.Backgroundable(project, "Downloading binary object", true) {
                 @Override
                 public void run(@NotNull ProgressIndicator indicator) {
+                    /* Fetch and write with method-local bytes to avoid cross-download races. */
+                    byte[] bytes;
+                    try {
+                        IConnection con = DBProject.getInstance(project).getConnection();
+                        MapValue result = con.getData(mapValue, table);
+                        bytes = result.getBinary(binaryColumnName);
+                        if (bytes == null) {
+                            Notification notification = new Notification("Oracle NOSQL", "Oracle NoSql explorer", "Error downloading file: no binary data found", NotificationType.ERROR);
+                            Notifications.Bus.notify(notification, project);
+                            return;
+                        }
+                    } catch (Exception ex) {
+                        Notification notification = new Notification("Oracle NOSQL", "Oracle NoSql explorer", "Error downloading file: " + ex.getMessage(), NotificationType.ERROR);
+                        Notifications.Bus.notify(notification, project);
+                        return;
+                    }
+
                     try (FileOutputStream outputStream = new FileOutputStream(fileSelected.getAbsolutePath())) {
                         outputStream.write(bytes);
-                        outputStream.close();
                         setNotification(fileSelected);
                     } catch (IOException e) {
                         Notification notification = new Notification("Oracle NOSQL", "Oracle NoSql explorer", "Error downloading file: " + e.getMessage(), NotificationType.ERROR);

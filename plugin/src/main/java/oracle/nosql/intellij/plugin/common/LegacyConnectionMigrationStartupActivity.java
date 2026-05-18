@@ -73,11 +73,11 @@ public class LegacyConnectionMigrationStartupActivity
          * entry. No schema refresh or network connection is made during this.
          */
         firstMigratedState = firstNonNull(firstMigratedState,
-                migrateCloud(legacyState, multipleState));
+                migrateCloud(project, legacyState, multipleState));
         firstMigratedState = firstNonNull(firstMigratedState,
-                migrateOnprem(legacyState, multipleState));
+                migrateOnprem(project, legacyState, multipleState));
         firstMigratedState = firstNonNull(firstMigratedState,
-                migrateCloudsim(legacyState, multipleState));
+                migrateCloudsim(project, legacyState, multipleState));
 
         if (firstMigratedState != null &&
                 isBlank(legacyState.dict.get(
@@ -87,6 +87,7 @@ public class LegacyConnectionMigrationStartupActivity
     }
 
     private static ConnectionDataProviderService.State migrateCloud(
+            Project project,
             ConnectionDataProviderService.State legacyState,
             MultipleConnectionsDataProviderService.State multipleState) {
         String target = trimToNull(legacyState.dict.get("/Cloud/Cloud/endpoint"));
@@ -103,6 +104,8 @@ public class LegacyConnectionMigrationStartupActivity
         String name = firstNonBlank(
                 state.dict.get("/Cloud/Cloud/connection-name"), target);
         state.dict.put("/Cloud/Cloud/connection-name", name);
+        /* Move legacy Cloud passphrases out of project XML during migration. */
+        ConnectionDataProviderService.migrateSensitiveValues(project, state);
 
         String uid = target;
         String compartment = trimToNull(state.dict.get("/Cloud/COMPARTMENT"));
@@ -115,6 +118,7 @@ public class LegacyConnectionMigrationStartupActivity
     }
 
     private static ConnectionDataProviderService.State migrateOnprem(
+            Project project,
             ConnectionDataProviderService.State legacyState,
             MultipleConnectionsDataProviderService.State multipleState) {
         String target = trimToNull(
@@ -129,6 +133,8 @@ public class LegacyConnectionMigrationStartupActivity
         String name = firstNonBlank(
                 state.dict.get("/Onprem/Onprem/connection-name"), target);
         state.dict.put("/Onprem/Onprem/connection-name", name);
+        /* Move legacy Onprem passwords/passphrases out of project XML. */
+        ConnectionDataProviderService.migrateSensitiveValues(project, state);
 
         String uid = target;
         String namespace = trimToNull(state.dict.get("/Onprem/NAMESPACE"));
@@ -141,6 +147,7 @@ public class LegacyConnectionMigrationStartupActivity
     }
 
     private static ConnectionDataProviderService.State migrateCloudsim(
+            Project project,
             ConnectionDataProviderService.State legacyState,
             MultipleConnectionsDataProviderService.State multipleState) {
         String target = trimToNull(
@@ -152,11 +159,21 @@ public class LegacyConnectionMigrationStartupActivity
         ConnectionDataProviderService.State state =
                 copyProfileState(legacyState, "/Cloudsim/");
         state.dict.put(ConnectionDataProviderService.KEY_PROFILE_TYPE, CLOUDSIM);
-        String tenantId = firstNonBlank(state.dict.get("/Cloudsim/TENANT_ID"),
-                "exampleId");
-        state.dict.put("/Cloudsim/TENANT_ID", tenantId);
+        String tenantId = trimToNull(state.dict.get("/Cloudsim/TENANT_ID"));
+        if (tenantId != null) {
+            state.dict.put("/Cloudsim/TENANT_ID", tenantId);
+        }
+        /* Store CloudSim bearer-token material in PasswordSafe before adding it. */
+        ConnectionDataProviderService.migrateSensitiveValues(project, state);
 
-        String uid = target + " : " + tenantId;
+        /* Keep the migrated UID stable enough for users but free of token text. */
+        String tenantIdentifier = ConnectionDataProviderService
+                .getNonSecretIdentifierForStoredValue(
+                        state.dict.get("/Cloudsim/TENANT_ID"));
+        if (tenantIdentifier.isEmpty()) {
+            tenantIdentifier = "tenant-not-set";
+        }
+        String uid = target + " : " + tenantIdentifier;
         String name = firstNonBlank(
                 state.dict.get("/Cloudsim/Cloudsim/connection-name"), uid);
         state.dict.put("/Cloudsim/Cloudsim/connection-name", name);

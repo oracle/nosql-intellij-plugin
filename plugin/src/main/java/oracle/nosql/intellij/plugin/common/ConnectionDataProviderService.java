@@ -20,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Class for getting and setting config properties like
@@ -44,13 +45,26 @@ public class ConnectionDataProviderService implements Serializable,PersistentSta
         return "/" + profileType.getName() + "/" + property.getName();
     }
 
-    public void putValue(String prefKey, String defaultValue) {
+    public synchronized void putValue(String prefKey, String defaultValue) {
+        if (ConnectionSecretStore.isSensitiveKey(prefKey)) {
+            /*
+             * Sensitive connection fields must not be serialized into the
+             * project-level oracle.nosql.config.xml file. Store the real value
+             * in PasswordSafe and keep only an opaque reference in this state.
+             */
+            String storedValue = connectionState.dict.get(prefKey);
+            connectionState.dict.put(prefKey,
+                    ConnectionSecretStore.store(project, prefKey,
+                            defaultValue, storedValue));
+            return;
+        }
         connectionState.dict.put(prefKey,defaultValue);
     }
 
     public static class State implements Serializable {
         public final HashMap<String,String> dict = new HashMap<>();
     }
+    private transient Project project;
     State connectionState;
 
 
@@ -58,11 +72,37 @@ public class ConnectionDataProviderService implements Serializable,PersistentSta
         connectionState = new State();
     }
 
-    public static ConnectionDataProviderService getInstance(@NotNull Project project) {
-        return project.getService(ConnectionDataProviderService.class);
+    public ConnectionDataProviderService(Project project) {
+        this();
+        this.project = project;
     }
-    public String getValue(String key) {
-        return connectionState.dict.get(key);
+
+    public static ConnectionDataProviderService getInstance(@NotNull Project project) {
+        ConnectionDataProviderService service =
+                project.getService(ConnectionDataProviderService.class);
+        service.project = project;
+        return service;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
+    }
+
+    public synchronized String getValue(String key) {
+        String storedValue = connectionState.dict.get(key);
+        if (ConnectionSecretStore.isSensitiveKey(key)) {
+            /*
+             * Callers continue to use getValue normally; the service resolves
+             * secret references only in memory right before building UI/profile
+             * objects. The persisted state remains non-secret.
+             */
+            return ConnectionSecretStore.resolve(project, key, storedValue);
+        }
+        return storedValue;
+    }
+
+    public synchronized String getNonSecretIdentifierForKey(String key) {
+        return ConnectionSecretStore.publicIdentifier(connectionState.dict.get(key));
     }
 
     /**
@@ -73,7 +113,9 @@ public class ConnectionDataProviderService implements Serializable,PersistentSta
      */
     @Nullable
     @Override
-    public State getState() {
+    public synchronized State getState() {
+        /* Ensure legacy plaintext secrets are converted before IntelliJ serializes state. */
+        migrateSensitiveValues(project, connectionState);
         return connectionState;
     }
 
@@ -85,7 +127,23 @@ public class ConnectionDataProviderService implements Serializable,PersistentSta
      * @see XmlSerializerUtil#copyBean(Object, Object)
      */
     @Override
-    public void loadState(@NotNull State state) {
-        connectionState = state;
+    public synchronized void loadState(@NotNull State state) {
+        connectionState = state == null ? new State() : state;
+        /* Convert any plaintext values already present in old project XML. */
+        migrateSensitiveValues(project, connectionState);
+    }
+
+    static void migrateSensitiveValues(Project project, State state) {
+        if (state == null) {
+            return;
+        }
+        for (Map.Entry<String, String> entry : state.dict.entrySet()) {
+            entry.setValue(ConnectionSecretStore.migrateIfPlainText(
+                    project, entry.getKey(), entry.getValue()));
+        }
+    }
+
+    static String getNonSecretIdentifierForStoredValue(String storedValue) {
+        return ConnectionSecretStore.publicIdentifier(storedValue);
     }
 }

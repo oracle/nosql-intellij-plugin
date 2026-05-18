@@ -41,13 +41,13 @@ import java.util.Objects;
 import java.util.Set;
 
 public class TableRowNodeContextMenuActionGroup extends DefaultActionGroup {
-    protected static Set<String> binSet;
     private static final String NOTIFICATION_GROUP_ID = "Oracle NOSQL";
     private static final String NOTIFICATION_TITLE = "Oracle NoSql explorer";
-    private static boolean isJsonCollection;
 
     public TableRowNodeContextMenuActionGroup(Table table, JTable jTable, Project project) {
         IConnection connection;
+        /* Per-menu state avoids races when two tables/projects open row menus simultaneously. */
+        boolean isJsonCollection = false;
         try { // checks if the table is json collection table
             connection = DBProject.getInstance(Objects.requireNonNull(project)).getConnection();
             String schema = connection.showSchema(table);
@@ -64,7 +64,8 @@ public class TableRowNodeContextMenuActionGroup extends DefaultActionGroup {
             Notifications.Bus.notify(notification, project);
         }
 
-        binSet = new HashSet<>();
+        /* Binary-column names are table-specific and must not be shared statically. */
+        Set<String> binSet = new HashSet<>();
         try {
             for (int i = 0; i < table.getFieldCount(); i++) {
                 String name = table.getFields().get(i).getName();
@@ -78,9 +79,11 @@ public class TableRowNodeContextMenuActionGroup extends DefaultActionGroup {
             Notifications.Bus.notify(notification, project);
             return;
         }
-        add(new UpdateRowAction(table, jTable, project));
+        add(new UpdateRowAction(table, jTable, project, binSet,
+                isJsonCollection));
         add(new DeleteRowAction(table, jTable));
-        add(new DownloadJsonAction(table, jTable, project));
+        add(new DownloadJsonAction(table, jTable, project, binSet,
+                isJsonCollection));
     }
 
     /**
@@ -152,12 +155,17 @@ public class TableRowNodeContextMenuActionGroup extends DefaultActionGroup {
         private String jString;
         private String primaryKeys;
         public DataBaseVirtualFile file;
-        private static byte[] bytes;
+        private final Set<String> binSet;
+        private final boolean isJsonCollection;
 
-        public UpdateRowAction(Table table, JTable jTable, Project project) {
+        public UpdateRowAction(Table table, JTable jTable, Project project,
+                               Set<String> binSet,
+                               boolean isJsonCollection) {
             super(UPDATE_ROW);
             this.table = table;
             this.jTable = jTable;
+            this.binSet = new HashSet<>(binSet);
+            this.isJsonCollection = isJsonCollection;
             this.file = new DataBaseVirtualFile(table);
             final int r = jTable.getSelectedRow();
             primaryKeys = getPrimaryKeys(table,jTable,r);
@@ -199,21 +207,21 @@ public class TableRowNodeContextMenuActionGroup extends DefaultActionGroup {
                                 Notifications.Bus.notify(notification, project);
                                 return;
                             }
-                            bytes = result.getBinary(binaryColumnName);
+                            /* Keep binary row data local to this action construction. */
+                            byte[] bytes = result.getBinary(binaryColumnName);
+                            if (bytes != null) {
+                                byte[] encoded = Base64.getEncoder().encode(bytes);
+                                jsonString.append("\"").append(jTable.getColumnName(i)).append("\":").append("\"").append(new String(encoded)).append("\"").append(",");
+                            } else {
+                                jsonString.append("\"").append(jTable.getColumnName(i)).append("\":").append("null").append(",");
+                            }
                         } catch (Exception ex) {
                             Notification notification = new Notification(NOTIFICATION_GROUP_ID, NOTIFICATION_TITLE, ERROR_UPDATING_ROW + ex.getMessage(), NotificationType.ERROR);
                             Notifications.Bus.notify(notification, project);
                             return;
                         }
-
-                        if (bytes != null) {
-                            byte[] encoded = Base64.getEncoder().encode(bytes);
-                            jsonString.append("\"").append(jTable.getColumnName(i)).append("\":").append("\"").append(new String(encoded)).append("\"").append(",");
-                        } else {
-                            jsonString.append("\"").append(jTable.getColumnName(i)).append("\":").append("null").append(",");
-                        }
                     }
-                    else if(TableRowNodeContextMenuActionGroup.isJsonCollection && jTable.getColumnName(i).equals("Rowdata")){
+                    else if(isJsonCollection && jTable.getColumnName(i).equals("Rowdata")){
                         String rowdata = (String) jTable.getValueAt(r, i);
                         if(rowdata.equals("{}"))
                             isRowDataEmpty = true;
@@ -255,14 +263,19 @@ public class TableRowNodeContextMenuActionGroup extends DefaultActionGroup {
         private String jString;
         private JsonNode json;
         private File file;
-        private static byte[] bytes;
         private Project project;
+        private final Set<String> binSet;
+        private final boolean isJsonCollection;
 
-        public DownloadJsonAction(Table table, JTable jTable, Project project) {
+        public DownloadJsonAction(Table table, JTable jTable, Project project,
+                                  Set<String> binSet,
+                                  boolean isJsonCollection) {
             super(DOWNLOAD_ROW);
             this.table = table;
             this.jTable = jTable;
             this.project = project;
+            this.binSet = new HashSet<>(binSet);
+            this.isJsonCollection = isJsonCollection;
 
             final int r = jTable.getSelectedRow();
             StringBuilder jsonString = new StringBuilder();
@@ -303,21 +316,21 @@ public class TableRowNodeContextMenuActionGroup extends DefaultActionGroup {
                                 Notifications.Bus.notify(notification, project);
                                 return;
                             }
-                            bytes = result.getBinary(binaryColumnName);
+                            /* Keep binary row data local to this download action. */
+                            byte[] bytes = result.getBinary(binaryColumnName);
+                            if (bytes != null) {
+                                byte[] encoded = Base64.getEncoder().encode(bytes);
+                                jsonString.append("\"").append(jTable.getColumnName(i)).append("\":").append("\"").append(new String(encoded)).append("\"").append(",");
+                            } else {
+                                jsonString.append("\"").append(jTable.getColumnName(i)).append("\":").append("null").append(",");
+                            }
                         } catch (Exception ex) {
                             Notification notification = new Notification(NOTIFICATION_GROUP_ID, NOTIFICATION_TITLE, ERROR_DOWNLOADING_ROW + ex.getMessage(), NotificationType.ERROR);
                             Notifications.Bus.notify(notification, project);
                             return;
                         }
-
-                        if (bytes != null) {
-                            byte[] encoded = Base64.getEncoder().encode(bytes);
-                            jsonString.append("\"").append(jTable.getColumnName(i)).append("\":").append("\"").append(new String(encoded)).append("\"").append(",");
-                        } else {
-                            jsonString.append("\"").append(jTable.getColumnName(i)).append("\":").append("null").append(",");
-                        }
                     }
-                    else if(TableRowNodeContextMenuActionGroup.isJsonCollection && jTable.getColumnName(i).equals("Rowdata")){
+                    else if(isJsonCollection && jTable.getColumnName(i).equals("Rowdata")){
                         String rowdata = (String) jTable.getValueAt(r, i);
                         jsonString.append(rowdata.substring(1, rowdata.length()));
                     }

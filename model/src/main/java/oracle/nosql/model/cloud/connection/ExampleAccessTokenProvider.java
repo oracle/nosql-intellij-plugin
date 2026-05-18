@@ -19,9 +19,21 @@ import oracle.nosql.driver.ops.Request;
  */
 
 public class ExampleAccessTokenProvider implements AuthorizationProvider {
-    private String tenantId;
+    private final String tenantId;
 
     ExampleAccessTokenProvider(String tenantId) {
+        /*
+         * This value is emitted as the Authorization bearer token. Fail closed
+         * if it is blank or still set to the old public example value.
+         */
+        if (tenantId == null || tenantId.trim().isEmpty()) {
+            throw new IllegalArgumentException(
+                    "CloudSim tenant identifier cannot be empty");
+        }
+        if ("exampleId".equals(tenantId.trim())) {
+            throw new IllegalArgumentException(
+                    "CloudSim tenant identifier must not use the example value");
+        }
         this.tenantId = tenantId;
     }
 

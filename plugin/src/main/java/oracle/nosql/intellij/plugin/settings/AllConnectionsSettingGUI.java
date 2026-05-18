@@ -187,7 +187,8 @@ public class AllConnectionsSettingGUI {
             String name = nameAndUidToPairMap.get(connection)[0];
             String uid = nameAndUidToPairMap.get(connection)[1];
             String currentConnectionUrl = getCurrentConnection();
-            ConnectionDataProviderService conService = new ConnectionDataProviderService();
+            /* Project-aware temporary service can resolve/migrate PasswordSafe-backed values. */
+            ConnectionDataProviderService conService = new ConnectionDataProviderService(project);
             conService.loadState(service.getState().dict.get(uid));
             String profileType = Objects.requireNonNull(profileTypeComboBox.getSelectedItem()).toString();
             ConnectionDetailsGUI cGUI = new ConnectionDetailsGUI(profileType, conService, service);
