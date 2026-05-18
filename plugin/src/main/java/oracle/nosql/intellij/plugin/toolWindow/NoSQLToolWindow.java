@@ -61,7 +61,13 @@ public class NoSQLToolWindow extends SimpleToolWindowPanel {
         this.myPlace = ActionPlaces.MAIN_TOOLBAR;
         setContent(myContent);
         initContent();
-        refresh();
+        /*
+         * SECURITY: Do not refresh from the constructor. Refresh builds a
+         * NoSQLHandle and lists schema objects, which can create outbound
+         * network traffic. Project open/tool-window construction must remain a
+         * passive UI operation; users can refresh explicitly from the toolbar.
+         */
+        myLayout.show(myContent, NON_LINKED_CARD_NAME);
     }
 
     private void initContent() {

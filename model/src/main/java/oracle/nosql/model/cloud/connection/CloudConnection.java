@@ -7,6 +7,8 @@
 
 package oracle.nosql.model.cloud.connection;
 
+import io.netty.handler.ssl.SslContext;
+import io.netty.handler.ssl.SslContextBuilder;
 import oracle.nosql.driver.NoSQLException;
 import oracle.nosql.driver.NoSQLHandle;
 import oracle.nosql.driver.NoSQLHandleConfig;
@@ -30,11 +32,16 @@ import oracle.nosql.model.schema.SchemaBuilder;
 import oracle.nosql.model.schema.Table;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.net.URL;
+import java.security.KeyStore;
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.net.ssl.TrustManagerFactory;
 
 /**
  * A connection as a thin wrapper over
@@ -62,9 +69,14 @@ public class CloudConnection extends AbstractConnection {
 	        config.setAuthorizationProvider(
                     new ExampleAccessTokenProvider(tenantId));
         } else if (PublicCloudConnectionProfile.class.isInstance(profile)) {
-            // Resetting the System property cloud connection if a user previously selected Onprem connection using SSL.
-            System.setProperty("javax.net.ssl.trustStore", "");
-            System.setProperty("javax.net.ssl.trustStorePassword", "");
+            /*
+             * SECURITY: Do not clear or mutate javax.net.ssl.* system
+             * properties here. Earlier code reset JVM-wide trustStore values
+             * when switching away from an Onprem SSL connection. That made TLS
+             * behavior process-global for the entire IDE. Each connection must
+             * instead carry its own TLS configuration, leaving the IDE/default
+             * SSLContext untouched.
+             */
             SignatureProvider ap;
             String useConfigFile = (String) profile.getProperty(PublicCloud.PROPERTY_USE_CONFIG_FILE.getName());
             if (useConfigFile.equals("true")) {
@@ -121,8 +133,15 @@ public class CloudConnection extends AbstractConnection {
                         .getProperty(Onprem.TRUST_STORE.getName());
                 String passphrase = (String) profile
                         .getProperty(Onprem.TS_PASSPHRASE.getName());
-                System.setProperty("javax.net.ssl.trustStore", trustStore);
-                System.setProperty("javax.net.ssl.trustStorePassword", passphrase);
+                /*
+                 * SECURITY: Scope trust material to this NoSQL handle only.
+                 * Setting javax.net.ssl.trustStore globally would allow a
+                 * project-controlled Onprem profile to replace trust anchors for
+                 * Marketplace, VCS, JetBrains services, and other plugins in the
+                 * same IDE process. NoSQLHandleConfig#setSslContext keeps the
+                 * configured truststore local to this connection.
+                 */
+                config.setSslContext(createSslContext(trustStore, passphrase));
                 sap = new StoreAccessTokenProvider(
                         username, password.toCharArray());
             } else {
@@ -134,6 +153,65 @@ public class CloudConnection extends AbstractConnection {
             }
         }
         handle = NoSQLHandleFactory.createNoSQLHandle(config);
+    }
+
+    /**
+     * Builds a client SSL context for a single Onprem NoSQL connection.
+     *
+     * <p>The truststore path/password can come from project settings, so this
+     * method must not update JVM-global SSL system properties. It loads the
+     * configured truststore into an isolated TrustManagerFactory and passes that
+     * trust manager into Netty's SslContextBuilder.</p>
+     */
+    private static SslContext createSslContext(String trustStore,
+                                               String passphrase) {
+        if (trustStore == null || trustStore.trim().isEmpty()) {
+            throw new IllegalArgumentException("TrustStore cannot be empty");
+        }
+        char[] password = passphrase == null ? new char[0] :
+                passphrase.toCharArray();
+        try {
+            TrustManagerFactory trustManagerFactory =
+                    TrustManagerFactory.getInstance(
+                            TrustManagerFactory.getDefaultAlgorithm());
+            trustManagerFactory.init(loadKeyStore(trustStore, password));
+            return SslContextBuilder.forClient()
+                    .trustManager(trustManagerFactory)
+                    .build();
+        } catch (Exception e) {
+            throw new IllegalArgumentException(
+                    "Failed to initialize TrustStore for Onprem SSL", e);
+        } finally {
+            Arrays.fill(password, '\0');
+        }
+    }
+
+    /**
+     * Loads the configured truststore while accepting the two common formats
+     * used by Java deployments. The default KeyStore type is tried first to
+     * preserve current JDK behavior; JKS and PKCS12 are tried as fallbacks so
+     * existing user configurations continue to work after removing the old
+     * System.setProperty based implementation.
+     */
+    private static KeyStore loadKeyStore(String trustStore, char[] password)
+            throws Exception {
+        Exception firstFailure = null;
+        String defaultType = KeyStore.getDefaultType();
+        for (String type : new String[]{defaultType, "JKS", "PKCS12"}) {
+            if (type == null || type.isEmpty()) {
+                continue;
+            }
+            try (InputStream in = new FileInputStream(trustStore)) {
+                KeyStore keyStore = KeyStore.getInstance(type);
+                keyStore.load(in, password);
+                return keyStore;
+            } catch (Exception e) {
+                if (firstFailure == null) {
+                    firstFailure = e;
+                }
+            }
+        }
+        throw firstFailure;
     }
 
     @Override
