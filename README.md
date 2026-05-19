@@ -73,19 +73,31 @@ Refer to the [Oracle NoSQL IntelliJ Plugin installation guide](https://docs.orac
 
 ### Connect to Your Database
 
+- Add, modify, delete, and select connections from **Settings -> Tools -> Oracle NoSQL -> Connections**.
+- The plugin does not automatically connect to a configured database when you open a project or open the Schema Explorer. To connect and load schema information, explicitly use **Refresh** from the Schema Explorer toolbar or right-click a connection and select **Refresh Schema**.
+- The first time a connection target is used in an IDE session, the plugin asks you to approve the selected profile and target before it creates a database connection. If you approve, that project/connection target is allowed for the current IDE session. If you deny, the connection is canceled before any network request is made.
+- The approval prompt can warn when the target appears to be `localhost`, a private network address, or a link-local address. Review the target before approving it, especially when opening projects from untrusted sources.
+- For On-Prem and CloudSim connections, endpoint URLs must use `http` or `https`, must include a host, and must not include embedded credentials such as `http://user:password@example.com`. Enter credentials in the connection fields instead of putting them in the URL.
+- Sensitive connection values, such as On-Prem passwords, On-Prem truststore passphrases, Cloud private-key passphrases, and CloudSim tenant IDs, are stored with IntelliJ PasswordSafe. The project configuration file keeps only references to those values. Update secrets from the plugin settings UI instead of editing `.idea/oracle.nosql.config.xml` manually.
+- Existing project connection settings from older plugin versions are migrated automatically. No manual migration step is required.
+
 - On-Prem  :
   1. Deploy a Oracle NoSQL on-premises store [Install and configure Oracle NoSQL Database](https://docs.oracle.com/en/database/other-databases/nosql-database/25.3/admin/install-and-upgrade.html)
   2. Configure the [Oracle NoSQL Database Proxy](https://docs.oracle.com/en/database/other-databases/nosql-database/25.3/admin/proxy.html)
   3. [Connect to Oracle NoSQL Database On-premises server](https://docs.oracle.com/en/database/other-databases/nosql-database/25.3/plugins/connecting-oracle-nosqldatabase-intellij.html#GUID-DACD40CB-A57C-4336-8879-7252EFA645C2)
   4. [Quick Start with KVLite in a Container](https://docs.oracle.com/en/database/other-databases/nosql-database/25.3/kvlite/quick-start-kvlite-container.html)
+  5. If you configure SSL with a truststore, provide the truststore details in the On-Prem connection form. The truststore applies only to the Oracle NoSQL connection created by the plugin and does not change IntelliJ IDEA's JVM-wide trust settings.
 
 - Cloud    : [Connect to Oracle NoSQL Cloud Service](https://docs.oracle.com/en/cloud/paas/nosql-cloud/yooud/#GUID-8DB8A86D-5DEB-4E02-941B-9636A81650B3:~:text=Service%20or%20simulator.-,Connecting%20to%20Oracle%20NoSQL%20Database%20Cloud%20Service%20from%20IntelliJ,-Learn%20how%20to)
 
 - CloudSim : [Connect to Oracle NoSQL CloudSimulator](https://docs.oracle.com/en/cloud/paas/nosql-cloud/yooud/index.html#GUID-64B71CFD-2C24-4A1E-A169-87AD1F37CC7F:~:text=in%20your%20schema.-,Connecting%20to%20Oracle%20NoSQL%20Database%20Cloud%20Simulator%20from%20IntelliJ,-Learn%20how%20to)
+  - CloudSim requires an explicit tenant ID. The plugin no longer provides or accepts the old `exampleId` default.
+  - The tenant ID must be alphanumeric (`A-Z`, `a-z`, `0-9`). Blank tenant IDs and `exampleId` are rejected.
+  - The tenant ID is treated as sensitive token material and is not shown in connection strings or Schema Explorer display text.
 
 ### Explore and Manage Tables
 
-Once you connect to your database -
+After you add and select a connection, explicitly refresh it to connect to your database and load schema information. The first refresh or other connection-related action may show the connection approval prompt described above.
 
 - Use the Schema Explorer to explore your tables.
 
