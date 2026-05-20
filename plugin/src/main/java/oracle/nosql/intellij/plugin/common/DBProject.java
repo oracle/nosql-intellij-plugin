@@ -38,6 +38,13 @@ public class DBProject {
     }
 
     public IConnection getConnection() throws Exception {
+        /*
+         * SECURITY: All plugin network/database activity funnels through this
+         * method. Validate and obtain explicit user approval before creating the
+         * NoSQL driver handle so project-loaded connection values cannot trigger
+         * zero-click outbound requests.
+         */
+        ConnectionSecurityGuard.approveSelectedConnectionIfNeeded(project);
         return getConnectionProfile().getConnection();
     }
 

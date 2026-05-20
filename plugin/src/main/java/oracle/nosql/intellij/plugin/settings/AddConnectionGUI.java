@@ -47,6 +47,7 @@ public class AddConnectionGUI {
     private CloudPanelGUI cloudPanelGUI;
 
     AddConnectionGUI(JComponent component, Project project) {
+        this.project = project;
         cloudPanelGUI = new CloudPanelGUI(project);
         profileTypeComboBox = (JComboBox) component;
         assert profileTypeComboBox != null;
@@ -59,12 +60,12 @@ public class AddConnectionGUI {
         connectionName = "";
         connectionCompartment = "root";
         connectionNamespace = "sysdefault";
-        connectionTenantId = "exampleId";
+        connectionTenantId = "tenant-not-set";
 
     }
 
     public JComponent createPanel(@NotNull MultipleConnectionsDataProviderService mConService) {
-        conService = new ConnectionDataProviderService();
+        conService = new ConnectionDataProviderService(project);
         this.mConService = mConService;
         if (profileTypes.length == 0) {
             throw new IllegalStateException("No registered profile types.");
@@ -425,9 +426,11 @@ public class AddConnectionGUI {
             connectionUID += " : " + connectionNamespace;
         }
 
-        String tenant_id = Objects.requireNonNull(conService.getState()).dict.get("/Cloudsim/TENANT_ID");
-        if (tenant_id != null && !tenant_id.isEmpty()) {
-            connectionTenantId = new String(tenant_id);
+        String tenantIdIdentifier = conService.getNonSecretIdentifierForKey(
+                "/Cloudsim/TENANT_ID");
+        if (tenantIdIdentifier != null && !tenantIdIdentifier.isEmpty()) {
+            /* UID/display text must not include the CloudSim bearer token itself. */
+            connectionTenantId = tenantIdIdentifier;
             connectionUID += " : " + connectionTenantId;
         }
 

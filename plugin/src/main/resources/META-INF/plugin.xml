@@ -159,7 +159,12 @@
         <projectService serviceImplementation="oracle.nosql.intellij.plugin.common.MultipleConnectionsDataProviderService"/>
         <projectService serviceImplementation="oracle.nosql.intellij.plugin.common.DatabaseBrowserManager"/>
         <projectService serviceImplementation="oracle.nosql.intellij.plugin.common.DBProject"/>
-        <postStartupActivity implementation="oracle.nosql.intellij.plugin.common.ConfigParserStartupActivity"/>
+        <!--
+          Migrates pre-1.5.0 single-connection state after IntelliJ has loaded
+          PersistentStateComponent data. This replaces the old ConfigParser XML
+          parser and intentionally performs no schema refresh/network I/O.
+        -->
+        <postStartupActivity implementation="oracle.nosql.intellij.plugin.common.LegacyConnectionMigrationStartupActivity"/>
 
         <!--fileEditorProvider is for creating a  query window form in editor -->
         <fileEditorProvider implementation="oracle.nosql.intellij.plugin.recordView.TableFileEditorProvider"/>

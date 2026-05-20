@@ -38,6 +38,7 @@ public class ConnectionDetailsGUI {
     private String connectionName;
     private String connectionCompartment;
     private String connectionNamespace;
+    private String connectionTenantId;
     private JPanel subPanel;
     private final IConnectionProfileType[] profileTypes = ConnectionFactory.getProfileTypes();
     private MultipleConnectionsDataProviderService mConService;
@@ -64,6 +65,7 @@ public class ConnectionDetailsGUI {
             subPanel.add(getProfileTypeSpecificUI(profile));
         }
         connectionNamespace = "sysdefault";
+        connectionTenantId = "tenant-not-set";
     }
 
     private JComponent getProfileTypeSpecificUI(IConnectionProfileType profileType) {
@@ -397,6 +399,13 @@ public class ConnectionDetailsGUI {
         if (namespace != null && !namespace.isEmpty()) {
             connectionNamespace = new String(namespace);
             connectionUID += " : " + connectionNamespace ;
+        }
+        String tenantIdIdentifier = conService.getNonSecretIdentifierForKey(
+                "/Cloudsim/TENANT_ID");
+        if (tenantIdIdentifier != null && !tenantIdIdentifier.isEmpty()) {
+            /* Rebuild CloudSim UIDs using a non-secret tenant identifier only. */
+            connectionTenantId = tenantIdIdentifier;
+            connectionUID += " : " + connectionTenantId;
         }
         Map<String, String> nameToUidMap = mConService.getNameToUidMap();
         if (!nameToUidMap.containsKey(connectionName))

@@ -53,11 +53,22 @@ public class Cloudsim extends AbstractConnectionProfileType implements
                     .setLabel("Tenant identifier *")
                         .setDescription(
                                 "Identifer for a multi-tenant cloud database service")
-                        .setDefaultValue("exampleId")
+                        /*
+                         * CloudSim uses this value as bearer-token material.
+                         * Do not seed new projects with a known sample token.
+                         */
+                        .setDefaultValue("")
                         .setValidator(input -> {
-                            // This is basic validation
-                            if (!Pattern.matches("[A-za-z0-9]+", input)) {
-                                return "Invalid tenant identifier, enter a valid alphanumaric tenant identifier";
+                            if (input == null || input.trim().isEmpty()) {
+                                return "Tenant identifier cannot be empty";
+                            }
+                            /* Reject the old placeholder explicitly for upgraded projects. */
+                            if ("exampleId".equals(input.trim())) {
+                                return "Tenant identifier must not use the example value";
+                            }
+                            /* Use A-Z, a-z, 0-9 only; the old A-z range allowed punctuation. */
+                            if (!Pattern.matches("[A-Za-z0-9]+", input)) {
+                                return "Invalid tenant identifier, enter a valid alphanumeric tenant identifier";
                             }
                             return null;
                         });

@@ -109,7 +109,8 @@ public class CloudConfigFileGUI {
     public void apply() throws ConfigurationException {
         checkData();
         validate();
-        ConnectionDataProviderService conService = new ConnectionDataProviderService();
+        /* Project-aware service lets any future sensitive values use project-scoped PasswordSafe entries. */
+        ConnectionDataProviderService conService = new ConnectionDataProviderService(project);
         IConnectionProfileType profileType = ConnectionFactory.getProfileTypeByName("Cloud");
         for (ConfigurableProperty property : profileType.getRequiredProperties()) {
             if(property.getName().equals("USE_CONFIG_FILE")) {

@@ -17,7 +17,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -50,6 +52,7 @@ public class MultipleConnectionsDataProviderService implements Serializable, Per
         public final Map<String, String> nameToUidMap = new HashMap<>();
     }
 
+    private transient Project project;
     State connectionState;
 
 
@@ -57,8 +60,16 @@ public class MultipleConnectionsDataProviderService implements Serializable, Per
         connectionState = new State();
     }
 
+    public MultipleConnectionsDataProviderService(Project project) {
+        this();
+        this.project = project;
+    }
+
     public static MultipleConnectionsDataProviderService getInstance(@NotNull Project project) {
-        return project.getService(MultipleConnectionsDataProviderService.class);
+        MultipleConnectionsDataProviderService service =
+                project.getService(MultipleConnectionsDataProviderService.class);
+        service.project = project;
+        return service;
     }
 
     public ConnectionDataProviderService.State getValue(String conName) {
@@ -86,6 +97,7 @@ public class MultipleConnectionsDataProviderService implements Serializable, Per
     @Nullable
     @Override
     public State getState() {
+        migrateNestedSecrets(connectionState);
         return connectionState;
     }
 
@@ -98,6 +110,84 @@ public class MultipleConnectionsDataProviderService implements Serializable, Per
      */
     @Override
     public void loadState(@NotNull State state) {
-        connectionState = state;
+        connectionState = state == null ? new State() : state;
+        migrateNestedSecrets(connectionState);
+    }
+
+    private void migrateNestedSecrets(State state) {
+        if (state == null) {
+            return;
+        }
+        /*
+         * Multiple-connections state embeds individual ConnectionDataProvider
+         * states, so each nested connection must receive the same plaintext to
+         * PasswordSafe migration as the currently selected connection.
+         */
+        for (ConnectionDataProviderService.State connection :
+                state.dict.values()) {
+            ConnectionDataProviderService.migrateSensitiveValues(project,
+                    connection);
+        }
+        rewriteCloudSimUids(state);
+    }
+
+    private void rewriteCloudSimUids(State state) {
+        List<String> oldUids = new ArrayList<>(state.dict.keySet());
+        for (String oldUid : oldUids) {
+            ConnectionDataProviderService.State connection =
+                    state.dict.get(oldUid);
+            if (connection == null || !"Cloudsim".equals(
+                    connection.dict.get(ConnectionDataProviderService.KEY_PROFILE_TYPE))) {
+                continue;
+            }
+            String target = connection.dict.get(
+                    "/Cloudsim/Cloudsim/service-url");
+            if (target == null || target.trim().isEmpty()) {
+                continue;
+            }
+            String tenantIdentifier =
+                    ConnectionDataProviderService
+                            .getNonSecretIdentifierForStoredValue(
+                                    connection.dict.get("/Cloudsim/TENANT_ID"));
+            if (tenantIdentifier.isEmpty()) {
+                tenantIdentifier = "tenant-not-set";
+            }
+            /*
+             * Older CloudSim UIDs included the tenant token itself. Rewrite them
+             * to use a non-secret identifier derived from the PasswordSafe
+             * reference while preserving name->UID and type maps.
+             */
+            String newUid = uniqueUid(state,
+                    target + " : " + tenantIdentifier, oldUid);
+            if (oldUid.equals(newUid)) {
+                continue;
+            }
+            state.dict.remove(oldUid);
+            state.dict.put(newUid, connection);
+            String type = state.uidToTypeMap.remove(oldUid);
+            state.uidToTypeMap.put(newUid,
+                    type == null ? "Cloudsim" : type);
+            for (Map.Entry<String, String> entry :
+                    state.nameToUidMap.entrySet()) {
+                if (oldUid.equals(entry.getValue())) {
+                    entry.setValue(newUid);
+                }
+            }
+        }
+    }
+
+    private static String uniqueUid(State state, String desiredUid,
+                                    String existingUid) {
+        if (!state.dict.containsKey(desiredUid) ||
+                desiredUid.equals(existingUid)) {
+            return desiredUid;
+        }
+        int suffix = 2;
+        String candidate;
+        do {
+            candidate = desiredUid + " (" + suffix++ + ")";
+        } while (state.dict.containsKey(candidate) &&
+                !candidate.equals(existingUid));
+        return candidate;
     }
 }

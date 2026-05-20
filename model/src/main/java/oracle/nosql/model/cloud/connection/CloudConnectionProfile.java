@@ -127,8 +127,11 @@ public class CloudConnectionProfile extends AbstractConnectionProfile
 
     @Override
     public String getConnectionString() {
-        return (getTenantId().isEmpty() ? "" : getTenantId() + '@') +
-                getServiceUrl();
+        String tenantId = getTenantId();
+        /* This string is used for display/schema labels; never include token text. */
+        String tenantLabel = tenantId == null || tenantId.isEmpty() ? "" :
+                "tenant-set@";
+        return tenantLabel + getServiceUrl();
     }
 
     @Override

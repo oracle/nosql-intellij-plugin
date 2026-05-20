@@ -61,7 +61,13 @@ public class NoSQLToolWindow extends SimpleToolWindowPanel {
         this.myPlace = ActionPlaces.MAIN_TOOLBAR;
         setContent(myContent);
         initContent();
-        refresh();
+        /*
+         * SECURITY: Do not refresh from the constructor. Refresh builds a
+         * NoSQLHandle and lists schema objects, which can create outbound
+         * network traffic. Project open/tool-window construction must remain a
+         * passive UI operation; users can refresh explicitly from the toolbar.
+         */
+        myLayout.show(myContent, NON_LINKED_CARD_NAME);
     }
 
     private void initContent() {
@@ -122,13 +128,11 @@ public class NoSQLToolWindow extends SimpleToolWindowPanel {
             return null;
         }
         try {
-            String conString = con.getConnectionString();
+            /* Use the connection display name, not getConnectionString(), to avoid showing secrets. */
+            String conString = getCurrentConnectionDisplayName();
             SchemaBuilder builder = con.getSchemaBuilder();
-            String prefKey = "/" + DBProject.getInstance(project).getConnectionProfile().getType().getName() + "/" + "TENANT_ID";
-            String schemaName = ConnectionDataProviderService.getInstance(project).getValue(prefKey);
-            if (schemaName == null) schemaName = "CloudTenant";
             ConnectionDataProviderService.State state = ConnectionDataProviderService.getInstance(project).getState();
-            schemaName = getNewSchemaName(state);
+            String schemaName = getNewSchemaName(state);
             store = builder.build(conString, schemaName);
         } catch (Exception ex) {
             Notification notification = new Notification("Oracle NOSQL", "Oracle NoSQL Explorer", OracleNoSqlBundle.message("oracle.nosql.toolWindow.schema.get.error") + ex.getMessage(), NotificationType.ERROR);
@@ -136,6 +140,31 @@ public class NoSQLToolWindow extends SimpleToolWindowPanel {
             return null;
         }
         return store;
+    }
+
+    private String getCurrentConnectionDisplayName() {
+        ConnectionDataProviderService.State state =
+                ConnectionDataProviderService.getInstance(project).getState();
+        if (state == null) {
+            return "Oracle NoSQL";
+        }
+        Map<String, ConnectionDataProviderService.State> dict =
+                Objects.requireNonNull(MultipleConnectionsDataProviderService
+                        .getInstance(project).getState()).dict;
+        for (Map.Entry<String, ConnectionDataProviderService.State> entry :
+                dict.entrySet()) {
+            if (!state.dict.equals(entry.getValue().dict)) {
+                continue;
+            }
+            for (Map.Entry<String, String> nameEntry :
+                    MultipleConnectionsDataProviderService.getInstance(project)
+                            .getNameToUidMap().entrySet()) {
+                if (entry.getKey().equals(nameEntry.getValue())) {
+                    return nameEntry.getKey();
+                }
+            }
+        }
+        return "Oracle NoSQL";
     }
 
     private String getNewSchemaName(ConnectionDataProviderService.State state) {
