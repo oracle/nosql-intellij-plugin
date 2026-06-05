@@ -1,6 +1,6 @@
 <!--
   ~
-  ~ Copyright (C) 2019, 2025 Oracle and/or its affiliates.
+  ~ Copyright (C) 2019, 2026 Oracle and/or its affiliates.
   ~
   ~ Licensed under the Universal Permissive License v 1.0 as shown at
   ~ https://oss.oracle.com/licenses/upl/
@@ -129,8 +129,82 @@
             <ul>
         ]]>
     </description>
-    <change-notes>Initial release of the plugin. Supports connecting to Oracle NoSQL Database cloud service
-        and data retrieve.
+    <change-notes>
+        <![CDATA[
+            <p><b>The current version is 1.5.6. The following changes were made
+            since 1.5.4:</b></p>
+            <ul>
+                <li>
+                    <p>Added a first-use approval prompt before creating a
+                    database connection from project-stored settings.</p>
+                </li>
+                <li>
+                    <p>Stopped automatic database connections when a project or
+                    Schema Explorer opens. Users now explicitly refresh to
+                    connect and load schema information.</p>
+                </li>
+                <li>
+                    <p>Validated On-prem and CloudSim endpoint URLs so they
+                    must use http or https, include a host, and avoid embedded
+                    credentials.</p>
+                </li>
+                <li>
+                    <p>Moved sensitive connection values to IntelliJ
+                    PasswordSafe, including On-prem passwords, On-prem
+                    truststore passphrases, Cloud private-key passphrases, and
+                    CloudSim tenant identifiers.</p>
+                </li>
+                <li>
+                    <p>Added automatic migration for existing project
+                    connection settings from older plugin versions.</p>
+                </li>
+                <li>
+                    <p>Changed CloudSim tenant handling to require an explicit
+                    alphanumeric tenant identifier and reject blank values and
+                    exampleId.</p>
+                </li>
+                <li>
+                    <p>Stopped showing CloudSim tenant token text in connection
+                    display output.</p>
+                </li>
+                <li>
+                    <p>Scoped On-prem SSL truststore settings to the Oracle
+                    NoSQL connection instead of IntelliJ IDEA JVM-wide TLS
+                    settings.</p>
+                </li>
+                <li>
+                    <p>Updated the plugin distribution build so
+                    ./gradlew buildPlugin creates
+                    Oracle-NoSQL-Database-Connector-&lt;version&gt;.zip.</p>
+                </li>
+                <li>
+                    <p>Added a restricted-network build option:
+                    -Poracle.nosql.skipSearchableOptions=true.</p>
+                </li>
+                <li>
+                    <p>Updated Gradle to 9.3.0 and the IntelliJ Platform
+                    Gradle Plugin to 2.16.0.</p>
+                </li>
+                <li>
+                    <p>Updated plugin dependencies, including Oracle NoSQL Java
+                    SDK 5.4.22, org.json 20250517, Gson 2.13.2, and
+                    RSyntaxTextArea 3.6.0.</p>
+                </li>
+                <li>
+                    <p>Fixed build instability after the Gradle IntelliJ
+                    Platform Plugin 2.x upgrade.</p>
+                </li>
+                <li>
+                    <p>Fixed record-view and update-row shared-state issues
+                    that could affect concurrent row update, JSON download, and
+                    binary download actions.</p>
+                </li>
+                <li>
+                    <p>Fixed deprecated IntelliJ API usage and plugin
+                    configuration for newer IntelliJ Platform compatibility.</p>
+                </li>
+            </ul>
+        ]]>
     </change-notes>
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
          on how to target different products -->

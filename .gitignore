@@ -32,4 +32,8 @@ plugin/build
 /build/
 .gradle/
 .intellijPlatform/
+.codex
+.info
+.oca
+AGENTS.md
 

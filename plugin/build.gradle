@@ -1,6 +1,6 @@
 plugins {
     id("java")
-    id("org.jetbrains.intellij.platform") version "2.10.5"
+    id("org.jetbrains.intellij.platform") version "2.16.0"
 }
 
 group = "oracle.nosql"
@@ -21,16 +21,16 @@ repositories {
 
 dependencies {
     intellijPlatform {
-        intellijIdea(ideVersion)
+        intellijIdeaUltimate(ideVersion)
         bundledPlugin("com.intellij.java")
         bundledPlugin("com.intellij.modules.json")
     }
 
     implementation(project(":model"))
-    implementation("com.oracle.nosql.sdk:nosqldriver:5.4.18")
+    implementation("com.oracle.nosql.sdk:nosqldriver:5.4.22")
     implementation("com.fifesoft:rsyntaxtextarea:3.6.0")
     implementation("org.json:json:20250517")
-    implementation("com.google.code.gson:gson:2.11.0")
+    implementation("com.google.code.gson:gson:2.13.2")
 }
 
 intellijPlatform {
@@ -51,86 +51,77 @@ intellijPlatform {
         }
 
         changeNotes = """
-            <p><b>The current version is 1.5.5. The following features has been 
-            added since 1.4.0 :</b></p>
+            <p><b>The current version is 1.5.6. The following changes were made
+            since 1.5.4:</b></p>
             <ul>
                 <li>
-                    <p>Download query results into a JSON file</p>
+                    <p>Added a first-use approval prompt before creating a
+                    database connection from project-stored settings.</p>
                 </li>
                 <li>
-                    <p>View a table's DDL statement</p>
+                    <p>Stopped automatic database connections when a project or
+                    Schema Explorer opens. Users now explicitly refresh to
+                    connect and load schema information.</p>
                 </li>
                 <li>
-                    <p>Work with complex data types such as Arrays, Maps and Records</p>
+                    <p>Validated On-prem and CloudSim endpoint URLs so they
+                    must use http or https, include a host, and avoid embedded
+                    credentials.</p>
                 </li>
                 <li>
-                    <p>Work with binary and fixed binary data types</p>
+                    <p>Moved sensitive connection values to IntelliJ
+                    PasswordSafe, including On-prem passwords, On-prem
+                    truststore passphrases, Cloud private-key passphrases, and
+                    CloudSim tenant identifiers.</p>
                 </li>
                 <li>
-                    <p>View and use the previously executed SQL queries with command history</p>
+                    <p>Added automatic migration for existing project
+                    connection settings from older plugin versions.</p>
                 </li>
                 <li>
-                    <p>Create child tables</p>
+                    <p>Changed CloudSim tenant handling to require an explicit
+                    alphanumeric tenant identifier and reject blank values and
+                    exampleId.</p>
                 </li>
                 <li>
-                    <p>Full schema renderer for the Map, Array, Record, Binary, Fixed Binary and Index in the NoSQL tool window tree</p>
+                    <p>Stopped showing CloudSim tenant token text in connection
+                    display output.</p>
                 </li>
                 <li>
-                    <p>Add cloud connection using configuration file</p>
+                    <p>Scoped On-prem SSL truststore settings to the Oracle
+                    NoSQL connection instead of IntelliJ IDEA JVM-wide TLS
+                    settings.</p>
                 </li>
                 <li>
-                    <p>Multiple connections support for Cloud, On-prem and Cloudsim</p>
+                    <p>Updated the plugin distribution build so
+                    ./gradlew buildPlugin creates
+                    Oracle-NoSQL-Database-Connector-&lt;version&gt;.zip.</p>
                 </li>
                 <li>
-                    <p>Global Active Tables support for Cloud</p>
+                    <p>Added a restricted-network build option:
+                    -Poracle.nosql.skipSearchableOptions=true.</p>
                 </li>
                 <li>
-                    <p>Multi-region table support for On-prem</p>
+                    <p>Updated Gradle to 9.3.0 and the IntelliJ Platform
+                    Gradle Plugin to 2.16.0.</p>
                 </li>
                 <li>
-                    <p>Execute System Requests for the On-prem connections</p>
+                    <p>Updated plugin dependencies, including Oracle NoSQL Java
+                    SDK 5.4.22, org.json 20250517, Gson 2.13.2, and
+                    RSyntaxTextArea 3.6.0.</p>
                 </li>
                 <li>
-                    <p>Edit reserved capacity of the cloud tables</p>
+                    <p>Fixed build instability after the Gradle IntelliJ
+                    Platform Plugin 2.x upgrade.</p>
                 </li>
                 <li>
-                    <p>Namespace support for On-prem connections</p>
+                    <p>Fixed record-view and update-row shared-state issues
+                    that could affect concurrent row update, JSON download, and
+                    binary download actions.</p>
                 </li>
                 <li>
-                    <p>Column and SQL auto-completion in query workbench</p>
-                </li>
-                <li>
-                    <p>Syntax highlighted SQL to reduce errors</p>
-                </li>
-                <li>
-                    <p>Prettify SQL with a single-click</p>
-                </li>
-                <li>
-                    <p>Better JSON result navigation</p>
-                </li>
-                <li>
-                    <p>Calculate JE cache size, storage size and number of shards based on table's metedata</p>
-                </li>
-                <li>
-                    <p>Support for JSON Collection Tables</p>
-                </li>
-                <li>
-                    <p>Support for MR Counters</p>
-                </li>
-                <li>
-                    <p>View a Index's DDL statement</p>
-                </li>
-                <li>
-                    <p>Support for composite primary keys</p>
-                </li>
-                <li>
-                    <p>Session-token-based authentication for Cloud connections</p>
-                </li>
-                <li> 
-                    <p>Removed manually setting up SDK path</p> 
-                </li>
-                <li> 
-                    <p>Fixed deprecated APIs and improved IntelliJ compatibility</p> 
+                    <p>Fixed deprecated IntelliJ API usage and plugin
+                    configuration for newer IntelliJ Platform compatibility.</p>
                 </li>
             </ul>
         """
@@ -140,7 +131,7 @@ intellijPlatform {
         freeArgs = ["-mute", "TemplateWordInPluginId"]
 
         ides {
-            ide("IU-${ideVersion}")
+            current()
         }
     }
 }
