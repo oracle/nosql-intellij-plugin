@@ -323,7 +323,7 @@ There are a few ways to get help or report issues:
 
 ### License
 
-Copyright (C) 2024, 2025 Oracle and/or its affiliates. All rights reserved.
+Copyright (C) 2024, 2026 Oracle and/or its affiliates. All rights reserved.
 
 This plugin is licensed under the Universal Permissive License 1.0. See [LICENSE](https://www.apache.org/licenses/LICENSE-2.0)
 for details.
