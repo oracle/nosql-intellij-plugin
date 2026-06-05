@@ -2,6 +2,66 @@
 All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [1.5.6] - 2026-06-05
+
+### Added
+- Added a first-use approval prompt before the plugin creates a database
+  connection from project-stored settings. Approval is scoped to the current
+  IDE session and the selected project/connection target.
+- Added URL validation for On-prem and CloudSim connection endpoints. URLs
+  must use `http` or `https`, include a host, and must not include embedded
+  credentials.
+- Added IntelliJ PasswordSafe storage for sensitive connection values,
+  including On-prem passwords, On-prem truststore passphrases, Cloud
+  private-key passphrases, and CloudSim tenant identifiers.
+- Added automatic migration for existing project connection settings so older
+  projects do not require a manual migration step.
+- Added a build option to skip IntelliJ searchable-options generation in
+  restricted-network or VPN environments:
+  `-Poracle.nosql.skipSearchableOptions=true`.
+- Added JetBrains Marketplace agreement, approval guideline, and developer
+  agreement documents to the repository.
+
+### Changed
+- Opening a project or Schema Explorer no longer automatically connects to a
+  configured database. Users must explicitly use Refresh or Refresh Schema to
+  connect and load schema information.
+- CloudSim now requires an explicit tenant identifier. Blank values and the old
+  `exampleId` value are rejected, and tenant identifiers must be alphanumeric.
+- CloudSim tenant identifiers are treated as sensitive token material and are
+  not shown in connection display text.
+- On-prem SSL truststore settings now apply only to the Oracle NoSQL connection
+  created by the plugin and no longer change IntelliJ IDEA JVM-wide trust
+  settings.
+- Updated the plugin release version to `1.5.6`.
+- Updated the plugin display/artifact name to Oracle NoSQL Database Connector.
+- Updated the IntelliJ Platform Gradle Plugin from `2.10.5` to `2.16.0`.
+- Updated the IntelliJ Platform dependency to resolve IntelliJ IDEA Ultimate
+  explicitly and updated plugin verification to use the current target IDE.
+- Updated the Gradle wrapper to `9.3.0`.
+- Updated the plugin distribution build so `./gradlew buildPlugin` creates the
+  deployable plugin ZIP:
+  `plugin/build/distributions/Oracle-NoSQL-Database-Connector-<version>.zip`.
+- Updated the root `buildPlugin` task to depend on `:plugin:buildPlugin`.
+- Updated plugin release notes in Gradle and `plugin.xml` to describe the
+  changes from `1.5.4` to `1.5.6`.
+- Updated the Oracle NoSQL Java SDK from `5.4.18` to `5.4.22`.
+- Updated Gson from `2.11.0` to `2.13.2`.
+- Updated README setup, connection, CloudSim, credential-storage, and build
+  documentation for the new connection and build behavior.
+
+### Fixed
+- Replaced the legacy project XML parser used during startup with migration
+  based on IntelliJ persistent project state.
+- Fixed build instability after the Gradle IntelliJ Platform Plugin 2.x
+  upgrade.
+- Fixed record-view and update-row shared-state issues that could affect
+  concurrent row update, row JSON download, and binary object download actions.
+- Fixed deprecated IntelliJ API usage and plugin configuration structure for
+  newer IntelliJ Platform compatibility.
+- Improved binary object download handling so errors are reported without using
+  shared static state.
+
 ## [1.5.4] - 2025-12-01
 
 ### Added
