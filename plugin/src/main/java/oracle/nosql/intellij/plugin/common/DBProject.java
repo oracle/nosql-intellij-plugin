@@ -7,9 +7,6 @@
 
 package oracle.nosql.intellij.plugin.common;
 
-import com.intellij.ide.plugins.IdeaPluginDescriptor;
-import com.intellij.ide.plugins.PluginManagerCore;
-import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.project.Project;
 import oracle.nosql.model.connection.ConfigurableProperty;
 import oracle.nosql.model.connection.ConnectionFactory;
@@ -17,17 +14,9 @@ import oracle.nosql.model.connection.IConnection;
 import oracle.nosql.model.connection.IConnectionProfile;
 import oracle.nosql.model.connection.IConnectionProfileType;
 
-import java.io.File;
-
 public class DBProject {
 
     private Project project;
-    private static final String ID = OracleNoSqlBundle.message("oracle.nosql.plugin.Id");
-
-    private static IdeaPluginDescriptor GetPluginDesc() {
-        return PluginManagerCore.getPlugin(PluginId.getId(ID));
-    }
-
 
     private DBProject(Project project) {
         this.project = project;
