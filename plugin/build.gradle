@@ -128,10 +128,11 @@ intellijPlatform {
     }
 
     pluginVerification {
-        freeArgs = ["-mute", "TemplateWordInPluginId"]
+        freeArgs = ["-offline", "-mute", "TemplateWordInPluginId"]
 
         ides {
             current()
+            latest { }
         }
     }
 }

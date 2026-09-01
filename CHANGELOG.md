@@ -2,7 +2,7 @@
 All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
-## [1.5.6] - 2026-06-05
+## [1.5.6] - 2026-09-01
 
 ### Added
 - Added a first-use approval prompt before the plugin creates a database
@@ -51,6 +51,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
   documentation for the new connection and build behavior.
 
 ### Fixed
+- Removed an unused `PluginManagerCore.getPlugin(PluginId)` call that caused
+  JetBrains Marketplace to report internal API usage.
 - Replaced the legacy project XML parser used during startup with migration
   based on IntelliJ persistent project state.
 - Fixed build instability after the Gradle IntelliJ Platform Plugin 2.x

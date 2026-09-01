@@ -295,7 +295,7 @@ After you add and select a connection, explicitly refresh it to connect to your 
 ## Building the repository
 
 - Build the complete package with `./gradlew clean build`.
-- Build the plugin distribution zip with `./gradlew buildPlugin`. The build generates
+- Build the plugin distribution zip with `./gradlew clean buildPlugin`. The build generates
   `plugin/build/distributions/Oracle-NoSQL-Database-Connector-<version>.zip`.
 - If the headless IntelliJ searchable-options task fails in a restricted network or VPN
   environment, rerun the build with
